@@ -10,7 +10,7 @@ set -e
 TARGET="${1:-root@153.80.184.228}"          # ssh user@host
 HOST="${TARGET#*@}"
 APP_DIR="/opt/curator-demo"
-PORT="8090"
+PORT="8000"
 SSH="ssh ${SSH_OPTS:-}"                       # SSH_OPTS='-o BatchMode=yes' для авто-режима
 
 echo "==> 1/4 Копирую демо на сервер ($TARGET:$APP_DIR)"

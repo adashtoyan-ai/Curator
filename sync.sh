@@ -22,7 +22,7 @@ if [ "$HASH" != "$(cat .last_deploy_hash 2>/dev/null)" ]; then
   echo "↻ Изменения демо обнаружены — редеплой на $SERVER ..."
   if SSH_OPTS='-o BatchMode=yes -o ConnectTimeout=10' bash deploy_server.sh "$SERVER" >/tmp/curator_deploy.log 2>&1; then
     echo "$HASH" > .last_deploy_hash
-    echo "✅ Редеплой выполнен: http://153.80.184.228:8090"
+    echo "✅ Редеплой выполнен: http://153.80.184.228:8000"
   else
     echo "⚠ Редеплой не удался (SSH по ключу к серверу?). Лог: /tmp/curator_deploy.log"
   fi
