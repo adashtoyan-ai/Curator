@@ -3,120 +3,228 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>КУРАТОР — демо</title>
+<title>КУРАТОР — цифровое сопровождение граждан</title>
 <style>
   :root{
-    --brand:#0b5cab; --brand-2:#0a4d94;
-    --ok:#1a7f37; --ok-bg:#e6f4ea;
-    --warn:#8a5a00; --warn-bg:#fbf0d3;
-    --muted:#5b6672; --muted-bg:#eef1f5;
-    --bg:#eef2f7; --card:#fff; --line:#e3e8ef; --text:#1a2230;
-    --shadow:0 1px 3px rgba(16,24,40,.06),0 1px 2px rgba(16,24,40,.04);
-    --shadow-lg:0 10px 28px rgba(16,24,40,.12);
-    --radius:14px;
+    --brand:#1f3a5f; --brand-2:#16293f; --green:#355e4a; --gold:#c9a227;
+    --bg:#f5f7fa; --card:#fff; --line:#e3e8ef; --text:#1c2733; --muted:#5b6672;
+    --ok:#2e7d55; --ok-bg:#e8f3ec; --warn:#8a6a1f; --warn-bg:#f8f0d8;
+    --shadow:0 1px 2px rgba(20,35,60,.05); --shadow-md:0 6px 20px rgba(20,35,60,.08);
+    --r:16px;
   }
   *{box-sizing:border-box}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    margin:0;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .accent{height:4px;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
-  header{background:linear-gradient(120deg,var(--brand),var(--brand-2));color:#fff;
-    padding:20px 24px;display:flex;align-items:center;gap:15px}
-  header .emblem{width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.16);
-    display:flex;align-items:center;justify-content:center;font-size:27px;flex:0 0 auto}
-  header .h-title{font-size:20px;font-weight:800;letter-spacing:.2px}
-  header .h-region{font-weight:400;opacity:.92;font-size:14px}
-  header .h-welcome{font-size:13px;opacity:.88;margin-top:3px}
-  .tabs{display:flex;gap:6px;padding:14px 24px 0;max-width:920px;margin:0 auto;flex-wrap:wrap}
-  .tab{padding:10px 18px;border-radius:10px 10px 0 0;background:transparent;color:var(--muted);
-    cursor:pointer;font-weight:600;font-size:14px;border:1px solid transparent;border-bottom:none}
-  .tab:hover{background:rgba(255,255,255,.6)}
-  .tab.active{background:var(--card);color:var(--brand);box-shadow:var(--shadow);border-color:var(--line)}
-  main{padding:22px 24px 64px;max-width:920px;margin:0 auto}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
-  h2{font-size:16px;margin:0 0 14px;font-weight:700}
-  button{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:11px 18px;
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    margin:0;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+
+  /* ---- Top bar ---- */
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:12px 24px;display:flex;
+    align-items:center;gap:12px;position:sticky;top:0;z-index:20}
+  .topbar .mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex:0 0 auto}
+  .topbar .tname{font-weight:800;letter-spacing:.3px;color:var(--brand)}
+  .topbar .treg{color:var(--muted);font-size:13px}
+  .navtabs{margin-left:auto;display:flex;gap:2px}
+  .navtabs .tab{padding:8px 14px;border-radius:9px;color:var(--muted);cursor:pointer;font-weight:600;
+    font-size:14px;transition:.15s}
+  .navtabs .tab:hover{background:var(--bg);color:var(--brand)}
+  .navtabs .tab.active{background:var(--brand);color:#fff}
+
+  /* ---- Hero ---- */
+  .hero{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;
+    padding:52px 24px 64px}
+  .hero-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;
+    gap:40px;align-items:center}
+  .hero h1{font-size:42px;line-height:1.08;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
+  .hero .promise{font-size:22px;font-weight:500;opacity:.95;margin:0 0 10px}
+  .hero .sub{font-size:16px;opacity:.82;margin:0 0 22px;max-width:520px}
+  .hero .checks{display:flex;flex-direction:column;gap:10px;margin:0 0 26px}
+  .hero .checks div{display:flex;align-items:center;gap:10px;font-size:15px}
+  .hero .checks .c{width:22px;height:22px;border-radius:50%;background:rgba(201,162,39,.22);
+    color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto}
+  .cta{background:var(--gold);color:#20160a;border:0;border-radius:12px;padding:14px 26px;
+    font-size:16px;font-weight:700;cursor:pointer;transition:.15s}
+  .cta:hover{filter:brightness(1.06)} .cta:active{transform:translateY(1px)}
+  .hero-art{width:100%;height:auto;filter:drop-shadow(0 12px 30px rgba(0,0,0,.25))}
+  .tagline{max-width:1080px;margin:26px auto 0;padding:0 24px;color:#dfe6ef;font-size:16px;
+    font-style:italic;opacity:.9}
+
+  /* ---- Stat band ---- */
+  .stats{max-width:1080px;margin:-34px auto 0;padding:0 24px;position:relative;z-index:5}
+  .stats-in{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);
+    display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
+  .stat{padding:20px 18px;text-align:center;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat .n{font-size:30px;font-weight:800;color:var(--brand);line-height:1.1}
+  .stat .n .g{color:var(--gold)}
+  .stat small{color:var(--muted);display:block;margin-top:4px;font-size:12.5px}
+  .stat-note{max-width:1080px;margin:8px auto 0;padding:0 24px;color:var(--muted);font-size:12px}
+
+  main{padding:26px 24px 70px;max-width:1080px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+  h2{font-size:17px;margin:0 0 15px;font-weight:700}
+  button{background:var(--brand);color:#fff;border:0;border-radius:11px;padding:11px 20px;
     cursor:pointer;font-size:14px;font-weight:600;transition:.15s}
-  button:hover{filter:brightness(1.08)} button:active{transform:translateY(1px)}
-  button.ghost{background:var(--muted-bg);color:var(--text)} button.ghost:hover{background:#e3e8ef}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  input,select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;
-    width:100%;margin:5px 0;background:#fff;transition:.15s}
-  input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,92,171,.14)}
+  button:hover{filter:brightness(1.1)} button:active{transform:translateY(1px)}
+  button.ghost{background:#eef2f7;color:var(--brand)} button.ghost:hover{background:#e3e9f1}
+  button.sm{padding:8px 13px;font-size:13px}
+  input,select{padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:14px;
+    width:100%;margin:5px 0;background:#fff;transition:.15s;color:var(--text)}
+  input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,58,95,.12)}
   label{font-size:14px;display:block;margin:8px 0;font-weight:500}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .measure{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0;background:#fff;transition:.15s}
-  .measure:hover{box-shadow:var(--shadow-lg)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  small{color:var(--muted)}
+
+  /* route stepper (вау №1) */
+  .route{display:flex;align-items:flex-start;margin:6px 0 2px}
+  .route .rstep{flex:1;text-align:center;position:relative}
+  .route .rstep .rdot{width:18px;height:18px;border-radius:50%;background:#dfe4ec;margin:0 auto 8px;
+    border:3px solid #dfe4ec;transition:.3s}
+  .route .rstep.done .rdot{background:var(--green);border-color:var(--green)}
+  .route .rstep.cur .rdot{background:var(--gold);border-color:var(--gold);
+    box-shadow:0 0 0 5px rgba(201,162,39,.2)}
+  .route .rstep small{font-size:12px;color:var(--muted)}
+  .route .rstep.done small,.route .rstep.cur small{color:var(--text);font-weight:600}
+  .route .rstep:not(:last-child):after{content:"";position:absolute;top:8px;left:50%;width:100%;
+    height:3px;background:#dfe4ec;z-index:-0}
+  .route .rstep.done:not(:last-child):after{background:var(--green)}
+
+  .measure{border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin:11px 0;background:#fff;transition:.15s}
+  .measure:hover{box-shadow:var(--shadow-md)}
   .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
   .eligible{background:var(--ok-bg);color:var(--ok)}
   .conditional{background:var(--warn-bg);color:var(--warn)}
-  .need_info{background:var(--muted-bg);color:var(--muted)}
-  .st-submitted{background:#e7f0fb;color:#0b5cab}.st-in_review{background:var(--warn-bg);color:var(--warn)}
-  .st-approved{background:#e6f4ea;color:var(--ok)}.st-paid{background:#d7f0df;color:#0f6b2e}
-  .st-rejected{background:#fdeaea;color:#b42318}
-  .score{font-weight:700;color:var(--brand)}
-  .amount{font-weight:700;margin-left:6px}
-  .explain{font-size:13px;color:var(--muted);margin-top:8px;background:var(--muted-bg);
-    border-radius:10px;padding:11px 13px;line-height:1.65}
+  .need_info{background:#eef1f5;color:var(--muted)}
+  .st-submitted{background:#e7edf5;color:var(--brand)}.st-in_review{background:var(--warn-bg);color:var(--warn)}
+  .st-approved{background:var(--ok-bg);color:var(--ok)}.st-paid{background:#e3f2e9;color:#1c6b42}
+  .st-rejected{background:#fbe9e9;color:#a5342c}
+  .score{font-weight:700;color:var(--brand)} .amount{font-weight:700;color:var(--green);margin-left:6px}
+  .explain{font-size:13.5px;margin-top:10px;background:#f7f9fb;border:1px solid var(--line);
+    border-radius:12px;padding:13px 15px;line-height:1.7}
+  .explain .ok{color:var(--ok)} .explain .no{color:#a5342c} .explain .need{color:var(--warn)}
   .hidden{display:none}
-  .step{opacity:.45;pointer-events:none;transition:opacity .3s} .step.on{opacity:1;pointer-events:auto}
-  small{color:var(--muted)}
-  .stat{text-align:center;flex:1;min-width:132px;background:linear-gradient(165deg,#fff,#f4f8fc);
-    border:1px solid var(--line);border-radius:12px;padding:16px 10px}
-  .stat .num{font-size:28px;font-weight:800;color:var(--brand);line-height:1.1}
-  .stat small{display:block;margin-top:4px}
-  .tl-item{display:flex;gap:12px;align-items:stretch}
-  .tl-rail{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
-  .tl-dot{width:12px;height:12px;border-radius:50%;background:var(--brand);margin-top:5px;
-    box-shadow:0 0 0 4px rgba(11,92,171,.14)}
-  .tl-line{width:2px;flex:1;background:var(--line);margin:3px 0}
-  .tl-body{padding-bottom:14px}
+  .step{opacity:.5;pointer-events:none;transition:opacity .3s} .step.on{opacity:1;pointer-events:auto}
   ol{margin:6px 0 0;padding-left:20px} li{margin:3px 0}
+
+  /* timeline (вау №4) */
+  .tl-item{display:flex;gap:14px;align-items:stretch}
+  .tl-time{flex:0 0 44px;text-align:right;color:var(--muted);font-size:12px;padding-top:2px;font-variant-numeric:tabular-nums}
+  .tl-rail{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+  .tl-dot{width:12px;height:12px;border-radius:50%;background:var(--green);margin-top:5px;
+    box-shadow:0 0 0 4px rgba(53,94,74,.14)}
+  .tl-line{width:2px;flex:1;background:var(--line);margin:3px 0}
+  .tl-body{padding-bottom:16px}
+
+  @media(max-width:820px){
+    .hero-in{grid-template-columns:1fr} .hero-art{max-width:360px;margin:0 auto}
+    .stats-in{grid-template-columns:repeat(2,1fr)} .stat:nth-child(2){border-right:0}
+    .hero h1{font-size:34px} .navtabs{display:none}
+    .mobtabs{display:flex!important}
+  }
+  .mobtabs{display:none;gap:6px;flex-wrap:wrap;margin:0 auto 4px;max-width:1080px;padding:12px 24px 0}
+  .mobtabs .tab{padding:8px 12px;border-radius:9px;background:#fff;border:1px solid var(--line);
+    font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+  .mobtabs .tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 </style>
 </head>
 <body>
-<div class="accent"></div>
-<header>
-  <div class="emblem" id="emblem">🛡️</div>
-  <div>
-    <div><span class="h-title" id="sysname">КУРАТОР</span>
-      <span class="h-region" id="regionname">· Краснодарский край</span></div>
-    <div class="h-welcome" id="welcome"></div>
+
+<div class="topbar">
+  <div class="mark" id="emblem">🛡️</div>
+  <div><span class="tname" id="sysname">КУРАТОР</span> <span class="treg" id="regionname">· Краснодарский край</span></div>
+  <div class="navtabs">
+    <div class="tab active" data-tab="citizen" onclick="switchTab('citizen')">Гражданин</div>
+    <div class="tab" data-tab="coordinator" onclick="switchTab('coordinator')">Координатор</div>
+    <div class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Руководитель</div>
+    <div class="tab" data-tab="admin" onclick="switchTab('admin')">Администратор</div>
   </div>
-</header>
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('citizen')">Гражданин</div>
-  <div class="tab" onclick="switchTab('coordinator')">Координатор</div>
-  <div class="tab" onclick="switchTab('dashboard')">Руководитель</div>
-  <div class="tab" onclick="switchTab('admin')">Администратор</div>
 </div>
+<div class="mobtabs">
+  <div class="tab active" data-tab="citizen" onclick="switchTab('citizen')">Гражданин</div>
+  <div class="tab" data-tab="coordinator" onclick="switchTab('coordinator')">Координатор</div>
+  <div class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Руководитель</div>
+  <div class="tab" data-tab="admin" onclick="switchTab('admin')">Администратор</div>
+</div>
+
+<!-- HERO (виден на вкладке Гражданин) -->
+<section id="hero">
+  <div class="hero">
+    <div class="hero-in">
+      <div>
+        <h1 id="hero-title">КУРАТОР</h1>
+        <p class="promise" id="hero-promise">Цифровое сопровождение граждан — от обращения до получения помощи</p>
+        <p class="sub">Для участников СВО, членов их семей и других категорий граждан, нуждающихся в государственной поддержке.</p>
+        <div class="checks">
+          <div><span class="c">✓</span> Подбор мер поддержки автоматически</div>
+          <div><span class="c">✓</span> Объяснение каждого решения</div>
+          <div><span class="c">✓</span> Полный маршрут сопровождения человека</div>
+        </div>
+        <button class="cta" onclick="document.getElementById('c-login').scrollIntoView({behavior:'smooth'})">Начать демонстрацию</button>
+      </div>
+      <div>
+        <svg class="hero-art" viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2a4a72"/><stop offset="1" stop-color="#1b3151"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="30" width="420" height="300" rx="22" fill="url(#g1)" opacity=".55"/>
+          <!-- маршрут сопровождения -->
+          <path d="M60 250 C 140 250, 150 130, 230 130 S 330 210, 400 120" fill="none"
+                stroke="#c9a227" stroke-width="3.5" stroke-dasharray="2 10" stroke-linecap="round" opacity=".9"/>
+          <g fill="#c9a227">
+            <circle cx="60" cy="250" r="8"/><circle cx="230" cy="130" r="8"/><circle cx="400" cy="120" r="8"/>
+          </g>
+          <!-- человек -->
+          <circle cx="130" cy="205" r="26" fill="#e9eef5"/>
+          <circle cx="130" cy="196" r="10" fill="#2a4a72"/>
+          <path d="M112 222 c0 -12 36 -12 36 0 z" fill="#2a4a72"/>
+          <!-- координатор + документ->галочка -->
+          <rect x="300" y="180" width="96" height="70" rx="12" fill="#e9eef5"/>
+          <rect x="315" y="196" width="46" height="7" rx="3.5" fill="#9fb0c6"/>
+          <rect x="315" y="212" width="66" height="7" rx="3.5" fill="#c3cede"/>
+          <circle cx="372" cy="232" r="15" fill="#2e7d55"/>
+          <path d="M365 232 l5 5 l9 -11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- региональная дуга -->
+          <path d="M40 300 Q 230 340 420 300" fill="none" stroke="#3a5678" stroke-width="2" opacity=".6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="tagline">«Ни один человек не должен остаться один на пути получения государственной помощи.»</div>
+  <div class="stats"><div class="stats-in" id="statband"></div></div>
+  <div class="stat-note" id="statnote">Демонстрационные показатели сопровождения.</div>
+</section>
 
 <main id="citizen">
   <div class="card" id="c-login">
-    <h2>1. Вход по номеру телефона</h2>
+    <h2>Вход по номеру телефона</h2>
     <div class="row"><input id="phone" placeholder="+7 918 000 00 00" value="+79181112233" style="max-width:260px">
       <button onclick="login()">Получить код и войти</button></div>
     <small id="otp-hint"></small>
   </div>
 
-  <div class="card step hidden" id="c-notif"><h2>🔔 Уведомления</h2><div id="notif"></div></div>
+  <div class="card step hidden" id="c-notif"><h2>Уведомления</h2><div id="notif"></div></div>
 
-  <div class="card step" id="c-cats"><h2>2. Ваши категории</h2><div id="cats"></div>
-    <button onclick="saveCats()">Сохранить категории</button></div>
+  <div class="card step" id="c-cats"><h2>Ваши категории</h2><div id="cats"></div>
+    <div style="height:8px"></div><button onclick="saveCats()">Сохранить категории</button></div>
 
-  <div class="card step" id="c-case"><h2>3. Создать кейс (жизненная ситуация)</h2>
+  <div class="card step" id="c-case"><h2>Создать кейс — жизненная ситуация</h2>
     <select id="life_event"></select><div style="height:8px"></div><button onclick="createCase()">Создать кейс</button></div>
 
-  <div class="card step" id="c-quest"><h2>4. Анкета</h2><div id="quest"></div>
-    <div style="height:8px"></div><button onclick="saveQuest()">Сохранить и подобрать меры</button></div>
+  <div class="card step" id="c-quest"><h2>Анкета</h2><div id="quest"></div>
+    <div style="height:8px"></div><button onclick="saveQuest()">Подобрать меры поддержки</button></div>
 
-  <div class="card step" id="c-results"><h2>5. Что вам положено</h2><div id="results"></div></div>
+  <div class="card step" id="c-route"><h2>Маршрут сопровождения</h2><div id="route"></div></div>
 
-  <div class="card step" id="c-apps"><h2>6. Мои заявки</h2><div id="apps"></div></div>
+  <div class="card step" id="c-results"><h2>Что вам положено</h2><div id="results"></div></div>
+
+  <div class="card step" id="c-apps"><h2>Мои заявки</h2><div id="apps"></div></div>
 
   <div class="card step" id="c-timeline"><h2>История сопровождения</h2>
     <small>Хронология вашего кейса — обновляется автоматически.</small>
-    <div id="timeline" style="margin-top:12px"></div></div>
+    <div id="timeline" style="margin-top:14px"></div></div>
 </main>
 
 <main id="dashboard" class="hidden">
@@ -128,115 +236,73 @@
 
 <main id="admin" class="hidden">
   <div class="card"><h2>Панель администратора региона</h2>
-    <button onclick="adminLogin()">Войти как администратор (демо)</button>
+    <button onclick="adminLogin()">Войти как администратор</button>
     <div id="admin-info" style="margin-top:8px"></div></div>
-  <div class="card" id="admin-brand-card" style="display:none"><h2>White Label — брендирование региона</h2>
+  <div class="card" id="admin-brand-card" style="display:none"><h2>Брендирование региона (White Label)</h2>
     <label>Название региона<input id="b-region" value="Краснодарский край"></label>
-    <label>Герб (эмодзи)<input id="b-emblem" value="🛡️"></label>
-    <label>Цвет (hex)<input id="b-color" value="#0b5cab"></label>
+    <label>Символ / герб (эмодзи)<input id="b-emblem" value="🛡️"></label>
+    <label>Основной цвет (hex)<input id="b-color" value="#1f3a5f"></label>
     <label>Приветствие<input id="b-welcome" value="Цифровое сопровождение участников СВО и членов их семей"></label>
     <div style="height:8px"></div><button onclick="saveBranding()">Применить брендирование</button>
-    <div style="margin-top:8px"><small>Меняет вид системы мгновенно — без разработчиков.</small></div></div>
+    <div style="margin-top:8px"><small>Вид системы меняется мгновенно — без разработчиков.</small></div></div>
   <div class="card" id="admin-meas-card" style="display:none"><h2>Меры поддержки региона</h2>
-    <b>Добавить меру (без кода):</b>
+    <b>Добавить меру без кода:</b>
     <label>Название<input id="nm-title" placeholder="Напр. Единовременная выплата"></label>
     <div class="row"><input id="nm-amount" type="number" placeholder="Сумма, ₽" style="max-width:180px">
-      <select id="nm-cat" style="max-width:280px"></select></div>
+      <select id="nm-cat" style="max-width:300px"></select></div>
     <div style="height:8px"></div><button onclick="addMeasure()">Добавить меру</button>
     <div id="admin-measures" style="margin-top:14px"></div></div>
 </main>
 
 <main id="coordinator" class="hidden">
   <div class="card"><h2>Кабинет координатора</h2>
-    <button onclick="coordLogin()">Войти как координатор (демо)</button>
+    <button onclick="coordLogin()">Войти как координатор</button>
     <div id="coord-info" style="margin-top:8px"></div></div>
   <div class="card"><h2>Заявки подопечных</h2><div id="coord-apps"><small>Войдите, чтобы увидеть заявки.</small></div></div>
 </main>
 
 <script>
-let token=null, coordToken=null, projectId=null, lastResults=[];
+let token=null, coordToken=null, adminToken=null, projectId=null, lastResults=[], STATUSES=[];
 const api=(p,m='GET',b=null,t=token)=>fetch('/api/v1'+p,{method:m,
   headers:{'Content-Type':'application/json',...(t?{'Authorization':'Bearer '+t}:{})},
   body:b?JSON.stringify(b):null}).then(r=>r.json());
 const on=id=>document.getElementById(id).classList.add('on');
 const rub=v=>(v||0).toLocaleString('ru')+' ₽';
+const CAT_RU={eligible:'Положено',conditional:'Скорее всего положено',need_info:'Нужны данные'};
+const STATUS_RU={submitted:'Подана',in_review:'На проверке',approved:'Одобрена',paid:'Выплачена',rejected:'Отказано'};
 const TABS=['citizen','coordinator','dashboard','admin'];
+
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('active',TABS[i]===t));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
   TABS.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==t));
+  document.getElementById('hero').classList.toggle('hidden',t!=='citizen');
   if(t==='dashboard') loadDash();
   if(t==='citizen' && token) loadNotif();
 }
-let adminToken=null;
-async function adminLogin(){
-  const r=await api('/admin/login','POST',{});
-  adminToken='user-'+r.user.id;
-  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона</small>`;
-  document.getElementById('admin-brand-card').style.display='block';
-  document.getElementById('admin-meas-card').style.display='block';
-  const cats=await api('/dictionaries/citizen_categories');
-  document.getElementById('nm-cat').innerHTML=cats.map(c=>`<option value="${c.code}">${c.title}</option>`).join('');
-  loadAdminMeasures();
-}
-async function saveBranding(){
-  await api('/branding','PUT',{
-    region_name:document.getElementById('b-region').value,
-    emblem:document.getElementById('b-emblem').value,
-    color_primary:document.getElementById('b-color').value,
-    welcome:document.getElementById('b-welcome').value,
-  },adminToken);
-  applyBranding();
-}
-async function addMeasure(){
-  await api('/admin/measures','POST',{
-    title:document.getElementById('nm-title').value,
-    amount:Number(document.getElementById('nm-amount').value)||null,
-    category_code:document.getElementById('nm-cat').value,
-  },adminToken);
-  document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';
-  loadAdminMeasures();
-}
-async function loadAdminMeasures(){
-  const m=await api('/admin/measures','GET',null,adminToken);
-  document.getElementById('admin-measures').innerHTML=
-    `<b>Всего мер: ${m.length}</b>`+m.slice(-8).reverse().map(x=>
-    `<div class="measure" style="padding:10px 12px"><b>${x.title}</b> <small>${x.level}${x.amount?(' · '+rub(x.amount)):''}</small></div>`).join('');
-}
-async function loadNotif(){
-  const n=await api('/notifications');
-  if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
-  on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
-  document.getElementById('notif').innerHTML=n.map(x=>
-    `<div class="measure" style="padding:10px 12px;${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
-}
+
 async function applyBranding(){
   const b=await api('/branding');
   document.getElementById('sysname').textContent=b.system_name;
   document.getElementById('emblem').textContent=b.emblem;
   document.getElementById('regionname').textContent='· '+b.region_name;
-  document.getElementById('welcome').textContent=b.welcome;
+  document.getElementById('hero-title').textContent=b.system_name;
+  document.getElementById('hero-promise').textContent=b.welcome && b.welcome.length>10
+     ? 'Цифровое сопровождение граждан — от обращения до получения помощи' : b.welcome;
   document.documentElement.style.setProperty('--brand',b.color_primary);
   document.title=b.system_name+' — '+b.region_name;
 }
-async function loadTimeline(){
-  const t=await api('/projects/'+projectId+'/timeline');
-  document.getElementById('timeline').innerHTML=t.map((e,i)=>
-    `<div class="tl-item">
-       <div class="tl-rail"><div class="tl-dot"></div>${i<t.length-1?'<div class="tl-line"></div>':''}</div>
-       <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div>
-     </div>`).join('')||'<small>Событий пока нет.</small>';
+async function loadStats(){
+  const d=await api('/dashboard/summary').catch(()=>({}));
+  const helped=127+(d.completed||0), cases=18+(d.new_cases||0), apps=42+(d.active_applications||0);
+  document.getElementById('statband').innerHTML=
+    `<div class="stat"><div class="n">${helped}</div><small>гражданам помогли</small></div>
+     <div class="stat"><div class="n">${cases}</div><small>новых кейсов</small></div>
+     <div class="stat"><div class="n"><span class="g">94%</span></div><small>мер подобрано автоматически</small></div>
+     <div class="stat"><div class="n">${apps}</div><small>заявок на рассмотрении</small></div>`;
 }
-async function loadDash(){
-  const d=await api('/dashboard/summary');
-  const stat=(t,v)=>`<div class="stat"><div class="num">${v}</div><small>${t}</small></div>`;
-  document.getElementById('dash').innerHTML=
-    `<div class="row">${stat('Кейсов',d.new_cases)}${stat('Активных заявок',d.active_applications)}
-       ${stat('Выплачено заявок',d.completed)}${stat('Сумма',rub(d.total_paid))}</div>
-     <div style="margin-top:16px"><b>Заявки по статусам:</b> ${Object.entries(d.by_status).map(([k,v])=>(STATUS_RU[k]||k)+': '+v).join(' · ')}</div>
-     <div style="margin-top:12px"><b>Топ-5 востребованных мер:</b><ol>${d.top_measures.map(m=>`<li>${m.title} — ${m.count}</li>`).join('')||'<li>—</li>'}</ol></div>`;
-}
-applyBranding();
+applyBranding(); loadStats();
 
+/* ---- Гражданин ---- */
 async function login(){
   const phone=document.getElementById('phone').value;
   const r=await api('/auth/otp/request','POST',{phone});
@@ -244,6 +310,7 @@ async function login(){
   const v=await api('/auth/otp/verify','POST',{phone,code:'1234',first_name:'Иван',last_name:'Петров'});
   token='user-'+v.user.id;
   on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
+  document.getElementById('c-cats').scrollIntoView({behavior:'smooth'});
 }
 async function loadCats(){
   const cats=await api('/dictionaries/citizen_categories');
@@ -252,8 +319,7 @@ async function loadCats(){
 }
 async function saveCats(){
   const sel=[...document.querySelectorAll('#cats input:checked')].map(i=>i.value);
-  await api('/users/me/categories','PUT',{categories:sel});
-  on('c-case');
+  await api('/users/me/categories','PUT',{categories:sel}); on('c-case');
 }
 async function loadLifeEvents(){
   const le=await api('/life_events');
@@ -262,11 +328,10 @@ async function loadLifeEvents(){
 async function createCase(){
   const life_event=document.getElementById('life_event').value;
   const p=await api('/projects','POST',{life_event});
-  projectId=p.id; on('c-quest'); loadQuest();
+  projectId=p.id; on('c-quest'); loadQuest(); on('c-route'); renderRoute('start');
 }
 async function loadQuest(){
-  const q=await api('/projects/'+projectId+'/questionnaire');
-  let html='';
+  const q=await api('/projects/'+projectId+'/questionnaire'); let html='';
   q.schema.forEach(s=>{html+=`<b>${s.title}</b>`;s.questions.forEach(qq=>{
     if(qq.type==='bool') html+=`<label><input type=checkbox data-code="${qq.code}"> ${qq.label}</label>`;
     else html+=`<label>${qq.label}<input data-code="${qq.code}" type="number"></label>`;});});
@@ -278,9 +343,16 @@ async function saveQuest(){
     answers[el.dataset.code]= el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
   await api('/projects/'+projectId+'/questionnaire','PUT',{answers});
   const r=await api('/projects/'+projectId+'/matching/run','POST',{});
-  lastResults=r.results; on('c-results'); renderResults();
+  lastResults=r.results; on('c-results'); renderResults(); renderRoute('matched');
+  document.getElementById('c-results').scrollIntoView({behavior:'smooth'});
 }
-const CAT_RU={eligible:'Положено',conditional:'Скорее всего положено',need_info:'Нужны данные'};
+const ROUTE=['Обращение','Подбор','Документы','Проверка','Выплата'];
+function stageOf(status){return {start:0,matched:1,submitted:2,in_review:3,approved:3,paid:4}[status]??0;}
+function renderRoute(status){
+  const cur=stageOf(status);
+  document.getElementById('route').innerHTML='<div class="route">'+ROUTE.map((s,i)=>
+    `<div class="rstep ${i<cur?'done':''} ${i===cur?'cur':''}"><div class="rdot"></div><small>${s}</small></div>`).join('')+'</div>';
+}
 function renderResults(){
   document.getElementById('results').innerHTML=lastResults.map((m,i)=>`
     <div class="measure">
@@ -288,34 +360,90 @@ function renderResults(){
         <b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
       <div style="margin-top:4px"><span class="score">Соответствие ${m.score}%</span>${m.amount?('<span class="amount">'+rub(m.amount)+'</span>'):''}</div>
       <div class="row" style="margin-top:10px">
-        <button class="ghost" onclick="toggleWhy(${i})">Почему подходит?</button>
-        <button onclick="apply(${m.measure_id})">Подать заявку</button>
+        <button class="ghost sm" onclick="toggleWhy(${i})">Почему именно эта мера?</button>
+        <button class="sm" onclick="apply(${m.measure_id})">Подать заявку</button>
       </div>
       <div class="explain hidden" id="why-${i}">
-        <b>Выполнено:</b><br>${m.matched.length?m.matched.map(x=>'✅ '+x.rule).join('<br>'):'—'}
-        ${m.unmet.length?('<br><b>Не выполнено:</b><br>'+m.unmet.map(x=>'❌ '+x.rule).join('<br>')):''}
-        ${m.missing.length?('<br><b>Не хватает данных:</b><br>'+m.missing.map(x=>'❓ '+x.field+' — '+x.reason).join('<br>')):''}
-        <br><b>Что дальше:</b> ${m.next_step||'—'}
-        <br><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}
+        ${m.matched.map(x=>'<div class="ok">✓ '+x.rule+'</div>').join('')||''}
+        ${m.unmet.map(x=>'<div class="no">✗ '+x.rule+'</div>').join('')}
+        ${m.missing.map(x=>'<div class="need">⚠ Не хватает: '+x.field+'</div>').join('')}
+        <div style="margin-top:6px"><b>Что дальше:</b> ${m.next_step||'—'}</div>
+        <div><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}</div>
       </div>
     </div>`).join('')||'<small>Подходящих мер не найдено.</small>';
 }
 function toggleWhy(i){document.getElementById('why-'+i).classList.toggle('hidden');}
 async function apply(measure_id){
   await api('/applications','POST',{project_id:projectId,measure_id});
-  on('c-apps'); loadApps(); on('c-timeline'); loadTimeline();
+  on('c-apps'); loadApps(); on('c-timeline'); loadTimeline(); renderRoute('submitted');
 }
-const STATUS_RU={submitted:'Подана',in_review:'На проверке',approved:'Одобрена',paid:'Выплачена',rejected:'Отказано'};
 async function loadApps(){
   const a=await api('/applications');
+  if(a.length) renderRoute(a[a.length-1].status);
   document.getElementById('apps').innerHTML=a.map(x=>
     `<div class="measure"><b>${x.measure_title}</b> <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span>
      ${x.expected_amount?('<span class="amount">'+rub(x.expected_amount)+'</span>'):''}</div>`).join('')||'<small>Заявок нет.</small>';
 }
-let STATUSES=[];
+async function loadNotif(){
+  const n=await api('/notifications');
+  if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
+  on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
+  document.getElementById('notif').innerHTML=n.map(x=>
+    `<div class="measure" style="padding:11px 13px;${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
+}
+const hhmm=iso=>{try{const d=new Date(iso+'Z');return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}catch(e){return '';}};
+async function loadTimeline(){
+  const t=await api('/projects/'+projectId+'/timeline');
+  document.getElementById('timeline').innerHTML=t.map((e,i)=>
+    `<div class="tl-item">
+       <div class="tl-time">${hhmm(e.created_at)}</div>
+       <div class="tl-rail"><div class="tl-dot"></div>${i<t.length-1?'<div class="tl-line"></div>':''}</div>
+       <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div>
+     </div>`).join('')||'<small>Событий пока нет.</small>';
+}
+
+/* ---- Дашборд ---- */
+async function loadDash(){
+  const d=await api('/dashboard/summary');
+  const stat=(t,v)=>`<div class="measure" style="text-align:center;flex:1;min-width:140px"><div style="font-size:26px;font-weight:800;color:var(--brand)">${v}</div><small>${t}</small></div>`;
+  document.getElementById('dash').innerHTML=
+    `<div class="row">${stat('Кейсов',d.new_cases)}${stat('Активных заявок',d.active_applications)}
+       ${stat('Выплачено',d.completed)}${stat('Сумма',rub(d.total_paid))}</div>
+     <div style="margin-top:16px"><b>Заявки по статусам:</b> ${Object.entries(d.by_status).map(([k,v])=>(STATUS_RU[k]||k)+': '+v).join(' · ')}</div>
+     <div style="margin-top:12px"><b>Топ-5 востребованных мер:</b><ol>${d.top_measures.map(m=>`<li>${m.title} — ${m.count}</li>`).join('')||'<li>—</li>'}</ol></div>`;
+}
+
+/* ---- Администратор ---- */
+async function adminLogin(){
+  const r=await api('/admin/login','POST',{}); adminToken='user-'+r.user.id;
+  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона</small>`;
+  document.getElementById('admin-brand-card').style.display='block';
+  document.getElementById('admin-meas-card').style.display='block';
+  const cats=await api('/dictionaries/citizen_categories');
+  document.getElementById('nm-cat').innerHTML=cats.map(c=>`<option value="${c.code}">${c.title}</option>`).join('');
+  loadAdminMeasures();
+}
+async function saveBranding(){
+  await api('/branding','PUT',{region_name:document.getElementById('b-region').value,
+    emblem:document.getElementById('b-emblem').value,color_primary:document.getElementById('b-color').value,
+    welcome:document.getElementById('b-welcome').value},adminToken);
+  applyBranding();
+}
+async function addMeasure(){
+  await api('/admin/measures','POST',{title:document.getElementById('nm-title').value,
+    amount:Number(document.getElementById('nm-amount').value)||null,
+    category_code:document.getElementById('nm-cat').value},adminToken);
+  document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';loadAdminMeasures();
+}
+async function loadAdminMeasures(){
+  const m=await api('/admin/measures','GET',null,adminToken);
+  document.getElementById('admin-measures').innerHTML=`<b>Всего мер: ${m.length}</b>`+m.slice(-8).reverse().map(x=>
+    `<div class="measure" style="padding:11px 13px"><b>${x.title}</b> <small>${x.level}${x.amount?(' · '+rub(x.amount)):''}</small></div>`).join('');
+}
+
+/* ---- Координатор ---- */
 async function coordLogin(){
-  const r=await api('/coordinator/login','POST',{});
-  coordToken='user-'+r.user.id;
+  const r=await api('/coordinator/login','POST',{}); coordToken='user-'+r.user.id;
   STATUSES=await api('/application_statuses');
   document.getElementById('coord-info').innerHTML=`<small>Вы вошли как ${r.user.first_name} ${r.user.last_name} (координатор)</small>`;
   loadCoordApps();
@@ -323,15 +451,13 @@ async function coordLogin(){
 async function loadCoordApps(){
   const apps=await api('/coordinator/applications','GET',null,coordToken);
   document.getElementById('coord-apps').innerHTML=apps.map(x=>
-    `<div class="measure"><b>${x.first_name} ${x.last_name}</b> <small>${x.phone}</small><br>
-     <div style="margin:4px 0">${x.measure_title} <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span></div>
-     <div class="row" style="margin-top:8px">
-       ${STATUSES.map(s=>`<button class="ghost" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}
-     </div></div>`).join('')||'<small>Заявок пока нет. Подайте заявку во вкладке «Гражданин».</small>';
+    `<div class="measure"><b>${x.first_name} ${x.last_name}</b> <small>${x.phone}</small>
+     <div style="margin:6px 0">${x.measure_title} <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span></div>
+     <div class="row">${STATUSES.map(s=>`<button class="ghost sm" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}</div>
+     </div>`).join('')||'<small>Заявок пока нет. Подайте заявку во вкладке «Гражданин».</small>';
 }
 async function setStatus(aid,status){
-  await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken);
-  loadCoordApps();
+  await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken); loadCoordApps();
 }
 </script>
 </body>
