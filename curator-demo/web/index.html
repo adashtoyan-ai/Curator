@@ -115,6 +115,7 @@ function switchTab(t){
   document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('active',TABS[i]===t));
   TABS.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==t));
   if(t==='dashboard') loadDash();
+  if(t==='citizen' && token) loadNotif();
 }
 let adminToken=null;
 async function adminLogin(){
@@ -193,7 +194,7 @@ async function login(){
   document.getElementById('otp-hint').textContent=r.message;
   const v=await api('/auth/otp/verify','POST',{phone,code:'1234',first_name:'Иван',last_name:'Петров'});
   token='user-'+v.user.id;
-  on('c-cats'); loadCats(); loadLifeEvents();
+  on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
 }
 async function loadCats(){
   const cats=await api('/dictionaries/citizen_categories');

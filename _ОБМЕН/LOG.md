@@ -17,3 +17,5 @@
 | T-009 | 2026-07-06 | Pilot Demo: данные КК, White Label, Case Timeline, дашборд, сценарий показа | ✅ протестировано | curator-demo/, DEMO_SCRIPT.md |
 | GIT-1 | 2026-07-06 | Подготовка к GitHub (README, .gitignore, скрипты) | ✅ готово | github_push.sh, deploy_push.sh |
 | GIT-2 | 2026-07-06 | Выложено на GitHub через deploy key | ✅ https://github.com/adashtoyan-ai/curator | — |
+| GIT-3 | 2026-07-06 | Авто-синхронизация с GitHub (launchd, каждые 3 мин) | ✅ включено | autosync_setup.sh, sync.sh |
+| CODE-2 | 2026-07-06 | Демо: уведомления гражданину + админ-панель (White Label UI, добавление мер) | ✅ протестировано | curator-demo/ |
