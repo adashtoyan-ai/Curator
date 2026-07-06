@@ -1,0 +1,16 @@
+# Базы данных демо
+curator-demo/curator.db*
+**/curator.db*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Прочее
+*.log

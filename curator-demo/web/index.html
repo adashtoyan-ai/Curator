@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>КУРАТОР — демо</title>
+<style>
+  :root{--brand:#1f6feb;--ok:#1a7f37;--warn:#9a6700;--muted:#57606a;--bg:#f6f8fa;--card:#fff;--line:#d0d7de}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:#1f2328}
+  header{background:var(--brand);color:#fff;padding:14px 20px;font-weight:600;font-size:18px}
+  .tabs{display:flex;gap:8px;padding:12px 20px 0}
+  .tab{padding:8px 14px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;background:#eaeef2;cursor:pointer}
+  .tab.active{background:var(--card);font-weight:600}
+  main{padding:20px;max-width:820px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  h2{font-size:15px;margin:0 0 10px}
+  button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:14px}
+  button.ghost{background:#eaeef2;color:#1f2328}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  input,select{padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px;width:100%;margin:4px 0}
+  label{font-size:14px;display:block;margin:6px 0}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .measure{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;color:#fff}
+  .eligible{background:var(--ok)} .conditional{background:var(--warn)} .need_info{background:var(--muted)}
+  .score{font-weight:700}
+  .explain{font-size:13px;color:var(--muted);margin-top:6px}
+  .hidden{display:none}
+  .step{opacity:.5;pointer-events:none} .step.on{opacity:1;pointer-events:auto}
+  small{color:var(--muted)}
+</style>
+</head>
+<body>
+<header><span id="emblem">🛡️</span> <span id="sysname">КУРАТОР</span>
+  <small style="font-weight:400" id="regionname">· Краснодарский край</small>
+  <div style="font-weight:400;font-size:13px;opacity:.9;margin-top:2px" id="welcome"></div></header>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('citizen')">Гражданин</div>
+  <div class="tab" onclick="switchTab('coordinator')">Координатор</div>
+  <div class="tab" onclick="switchTab('dashboard')">Руководитель</div>
+</div>
+
+<main id="citizen">
+  <div class="card" id="c-login">
+    <h2>1. Вход по номеру телефона</h2>
+    <div class="row"><input id="phone" placeholder="+7 918 000 00 00" value="+79181112233" style="max-width:260px">
+      <button onclick="login()">Получить код и войти</button></div>
+    <small id="otp-hint"></small>
+  </div>
+
+  <div class="card step" id="c-cats"><h2>2. Ваши категории</h2><div id="cats"></div>
+    <button onclick="saveCats()">Сохранить категории</button></div>
+
+  <div class="card step" id="c-case"><h2>3. Создать кейс (жизненная ситуация)</h2>
+    <select id="life_event"></select><button onclick="createCase()">Создать кейс</button></div>
+
+  <div class="card step" id="c-quest"><h2>4. Анкета</h2><div id="quest"></div>
+    <button onclick="saveQuest()">Сохранить и подобрать меры</button></div>
+
+  <div class="card step" id="c-results"><h2>5. Что вам положено</h2><div id="results"></div></div>
+
+  <div class="card step" id="c-apps"><h2>6. Мои заявки</h2><div id="apps"></div></div>
+
+  <div class="card step" id="c-timeline"><h2>История сопровождения</h2>
+    <small>Хронология вашего кейса — обновляется автоматически.</small>
+    <div id="timeline" style="margin-top:10px"></div></div>
+</main>
+
+<main id="dashboard" class="hidden">
+  <div class="card"><h2>Панель руководителя</h2>
+    <small>Сводка по региону в реальном времени.</small>
+    <div id="dash" style="margin-top:12px"></div>
+    <button class="ghost" onclick="loadDash()">Обновить</button></div>
+</main>
+
+<main id="coordinator" class="hidden">
+  <div class="card"><h2>Кабинет координатора</h2>
+    <button onclick="coordLogin()">Войти как координатор (демо)</button>
+    <div id="coord-info"></div></div>
+  <div class="card"><h2>Заявки подопечных</h2><div id="coord-apps"><small>Войдите, чтобы увидеть заявки.</small></div></div>
+</main>
+
+<script>
+let token=null, coordToken=null, projectId=null, lastResults=[];
+const api=(p,m='GET',b=null,t=token)=>fetch('/api/v1'+p,{method:m,
+  headers:{'Content-Type':'application/json',...(t?{'Authorization':'Bearer '+t}:{})},
+  body:b?JSON.stringify(b):null}).then(r=>r.json());
+const on=id=>document.getElementById(id).classList.add('on');
+const TABS=['citizen','coordinator','dashboard'];
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('active',TABS[i]===t));
+  TABS.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==t));
+  if(t==='dashboard') loadDash();
+}
+async function applyBranding(){
+  const b=await api('/branding');
+  document.getElementById('sysname').textContent=b.system_name;
+  document.getElementById('emblem').textContent=b.emblem;
+  document.getElementById('regionname').textContent='· '+b.region_name;
+  document.getElementById('welcome').textContent=b.welcome;
+  document.documentElement.style.setProperty('--brand',b.color_primary);
+  document.title=b.system_name+' — '+b.region_name;
+}
+async function loadTimeline(){
+  const t=await api('/projects/'+projectId+'/timeline');
+  document.getElementById('timeline').innerHTML=t.map((e,i)=>
+    `<div style="display:flex;gap:10px;align-items:flex-start;margin:0">
+       <div style="color:var(--brand)">${i<t.length-1?'●<br><span style=\"opacity:.3\">│</span>':'●'}</div>
+       <div style="padding-bottom:10px"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+e.status):''}</small></div>
+     </div>`).join('')||'<small>Событий пока нет.</small>';
+}
+async function loadDash(){
+  const d=await api('/dashboard/summary');
+  const card=(t,v)=>`<div class="measure" style="text-align:center;min-width:130px;flex:1">
+     <div style="font-size:26px;font-weight:700;color:var(--brand)">${v}</div><small>${t}</small></div>`;
+  document.getElementById('dash').innerHTML=
+    `<div class="row">${card('Кейсов',d.new_cases)}${card('Активных заявок',d.active_applications)}
+       ${card('Выплачено заявок',d.completed)}${card('Сумма, ₽',(d.total_paid||0).toLocaleString('ru'))}</div>
+     <div style="margin-top:12px"><b>Заявки по статусам:</b> ${Object.entries(d.by_status).map(([k,v])=>k+': '+v).join(' · ')}</div>
+     <div style="margin-top:12px"><b>Топ-5 востребованных мер:</b><ol>${d.top_measures.map(m=>`<li>${m.title} — ${m.count}</li>`).join('')||'<li>—</li>'}</ol></div>`;
+}
+applyBranding();
+
+async function login(){
+  const phone=document.getElementById('phone').value;
+  const r=await api('/auth/otp/request','POST',{phone});
+  document.getElementById('otp-hint').textContent=r.message;
+  const v=await api('/auth/otp/verify','POST',{phone,code:'1234',first_name:'Иван',last_name:'Петров'});
+  token='user-'+v.user.id;
+  on('c-cats'); loadCats(); loadLifeEvents();
+}
+async function loadCats(){
+  const cats=await api('/dictionaries/citizen_categories');
+  document.getElementById('cats').innerHTML=cats.map(c=>
+    `<label><input type=checkbox value="${c.code}"> ${c.title} <small>(${c.level})</small></label>`).join('');
+}
+async function saveCats(){
+  const sel=[...document.querySelectorAll('#cats input:checked')].map(i=>i.value);
+  await api('/users/me/categories','PUT',{categories:sel});
+  on('c-case');
+}
+async function loadLifeEvents(){
+  const le=await api('/life_events');
+  document.getElementById('life_event').innerHTML=le.map(e=>`<option value="${e.code}">${e.title}</option>`).join('');
+}
+async function createCase(){
+  const life_event=document.getElementById('life_event').value;
+  const p=await api('/projects','POST',{life_event});
+  projectId=p.id; on('c-quest'); loadQuest();
+}
+async function loadQuest(){
+  const q=await api('/projects/'+projectId+'/questionnaire');
+  let html='';
+  q.schema.forEach(s=>{html+=`<b>${s.title}</b>`;s.questions.forEach(qq=>{
+    if(qq.type==='bool') html+=`<label><input type=checkbox data-code="${qq.code}"> ${qq.label}</label>`;
+    else html+=`<label>${qq.label}<input data-code="${qq.code}" type="number"></label>`;});});
+  document.getElementById('quest').innerHTML=html;
+}
+async function saveQuest(){
+  const answers={};
+  document.querySelectorAll('#quest [data-code]').forEach(el=>{
+    answers[el.dataset.code]= el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
+  await api('/projects/'+projectId+'/questionnaire','PUT',{answers});
+  const r=await api('/projects/'+projectId+'/matching/run','POST',{});
+  lastResults=r.results; on('c-results'); renderResults();
+}
+const CAT_RU={eligible:'Положено',conditional:'Скорее всего положено',need_info:'Нужны данные'};
+function renderResults(){
+  document.getElementById('results').innerHTML=lastResults.map((m,i)=>`
+    <div class="measure">
+      <div class="row" style="justify-content:space-between">
+        <b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
+      <div><span class="score">Соответствие ${m.score}%</span> ${m.amount?('· '+m.amount.toLocaleString('ru')+' ₽'):''}</div>
+      <div class="row" style="margin-top:6px">
+        <button class="ghost" onclick="toggleWhy(${i})">Почему подходит?</button>
+        <button onclick="apply(${m.measure_id})">Подать заявку</button>
+      </div>
+      <div class="explain hidden" id="why-${i}">
+        <b>Выполнено:</b><br>${m.matched.length?m.matched.map(x=>'✅ '+x.rule).join('<br>'):'—'}
+        ${m.unmet.length?('<br><b>Не выполнено:</b><br>'+m.unmet.map(x=>'❌ '+x.rule).join('<br>')):''}
+        ${m.missing.length?('<br><b>Не хватает данных:</b><br>'+m.missing.map(x=>'❓ '+x.field+' — '+x.reason).join('<br>')):''}
+        <br><b>Что дальше:</b> ${m.next_step||'—'}
+        <br><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}
+      </div>
+    </div>`).join('')||'<small>Подходящих мер не найдено.</small>';
+}
+function toggleWhy(i){document.getElementById('why-'+i).classList.toggle('hidden');}
+async function apply(measure_id){
+  await api('/applications','POST',{project_id:projectId,measure_id});
+  on('c-apps'); loadApps(); on('c-timeline'); loadTimeline();
+}
+async function loadApps(){
+  const a=await api('/applications');
+  document.getElementById('apps').innerHTML=a.map(x=>
+    `<div class="measure"><b>${x.measure_title}</b> — <span class="badge eligible">${x.status}</span>
+     ${x.expected_amount?(' · '+x.expected_amount.toLocaleString('ru')+' ₽'):''}</div>`).join('')||'<small>Заявок нет.</small>';
+}
+let STATUSES=[];
+const STATUS_RU={submitted:'Подана',in_review:'На проверке',approved:'Одобрена',paid:'Выплачена',rejected:'Отказано'};
+async function coordLogin(){
+  const r=await api('/coordinator/login','POST',{});
+  coordToken='user-'+r.user.id;
+  STATUSES=await api('/application_statuses');
+  document.getElementById('coord-info').innerHTML=`<small>Вы вошли как ${r.user.first_name} ${r.user.last_name} (координатор)</small>`;
+  loadCoordApps();
+}
+async function loadCoordApps(){
+  const apps=await api('/coordinator/applications','GET',null,coordToken);
+  document.getElementById('coord-apps').innerHTML=apps.map(x=>
+    `<div class="measure"><b>${x.first_name} ${x.last_name}</b> <small>${x.phone}</small><br>
+     ${x.measure_title} — <span class="badge eligible">${STATUS_RU[x.status]||x.status}</span>
+     <div class="row" style="margin-top:8px">
+       ${STATUSES.map(s=>`<button class="ghost" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}
+     </div></div>`).join('')||'<small>Заявок пока нет. Подайте заявку во вкладке «Гражданин».</small>';
+}
+async function setStatus(aid,status){
+  await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken);
+  loadCoordApps();
+}
+</script>
+</body>
+</html>
