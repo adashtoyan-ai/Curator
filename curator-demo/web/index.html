@@ -39,6 +39,7 @@
   <div class="tab active" onclick="switchTab('citizen')">Гражданин</div>
   <div class="tab" onclick="switchTab('coordinator')">Координатор</div>
   <div class="tab" onclick="switchTab('dashboard')">Руководитель</div>
+  <div class="tab" onclick="switchTab('admin')">Администратор</div>
 </div>
 
 <main id="citizen">
@@ -48,6 +49,8 @@
       <button onclick="login()">Получить код и войти</button></div>
     <small id="otp-hint"></small>
   </div>
+
+  <div class="card step hidden" id="c-notif"><h2>🔔 Уведомления</h2><div id="notif"></div></div>
 
   <div class="card step" id="c-cats"><h2>2. Ваши категории</h2><div id="cats"></div>
     <button onclick="saveCats()">Сохранить категории</button></div>
@@ -74,6 +77,26 @@
     <button class="ghost" onclick="loadDash()">Обновить</button></div>
 </main>
 
+<main id="admin" class="hidden">
+  <div class="card"><h2>Панель администратора региона</h2>
+    <button onclick="adminLogin()">Войти как администратор (демо)</button>
+    <div id="admin-info"></div></div>
+  <div class="card" id="admin-brand-card" style="display:none"><h2>White Label — брендирование региона</h2>
+    <label>Название региона<input id="b-region" value="Краснодарский край"></label>
+    <label>Герб (эмодзи)<input id="b-emblem" value="🛡️"></label>
+    <label>Цвет (hex)<input id="b-color" value="#0b5cab"></label>
+    <label>Приветствие<input id="b-welcome" value="Цифровое сопровождение участников СВО и членов их семей"></label>
+    <button onclick="saveBranding()">Применить брендирование</button>
+    <small>Меняет вид системы мгновенно — без разработчиков.</small></div>
+  <div class="card" id="admin-meas-card" style="display:none"><h2>Меры поддержки региона</h2>
+    <b>Добавить меру (без кода):</b>
+    <label>Название<input id="nm-title" placeholder="Напр. Единовременная выплата"></label>
+    <div class="row"><input id="nm-amount" type="number" placeholder="Сумма, ₽" style="max-width:160px">
+      <select id="nm-cat"></select></div>
+    <button onclick="addMeasure()">Добавить меру</button>
+    <div id="admin-measures" style="margin-top:12px"></div></div>
+</main>
+
 <main id="coordinator" class="hidden">
   <div class="card"><h2>Кабинет координатора</h2>
     <button onclick="coordLogin()">Войти как координатор (демо)</button>
@@ -87,11 +110,53 @@ const api=(p,m='GET',b=null,t=token)=>fetch('/api/v1'+p,{method:m,
   headers:{'Content-Type':'application/json',...(t?{'Authorization':'Bearer '+t}:{})},
   body:b?JSON.stringify(b):null}).then(r=>r.json());
 const on=id=>document.getElementById(id).classList.add('on');
-const TABS=['citizen','coordinator','dashboard'];
+const TABS=['citizen','coordinator','dashboard','admin'];
 function switchTab(t){
   document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('active',TABS[i]===t));
   TABS.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==t));
   if(t==='dashboard') loadDash();
+}
+let adminToken=null;
+async function adminLogin(){
+  const r=await api('/admin/login','POST',{});
+  adminToken='user-'+r.user.id;
+  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона</small>`;
+  document.getElementById('admin-brand-card').style.display='block';
+  document.getElementById('admin-meas-card').style.display='block';
+  const cats=await api('/dictionaries/citizen_categories');
+  document.getElementById('nm-cat').innerHTML=cats.map(c=>`<option value="${c.code}">${c.title}</option>`).join('');
+  loadAdminMeasures();
+}
+async function saveBranding(){
+  await api('/branding','PUT',{
+    region_name:document.getElementById('b-region').value,
+    emblem:document.getElementById('b-emblem').value,
+    color_primary:document.getElementById('b-color').value,
+    welcome:document.getElementById('b-welcome').value,
+  },adminToken);
+  applyBranding();
+}
+async function addMeasure(){
+  await api('/admin/measures','POST',{
+    title:document.getElementById('nm-title').value,
+    amount:Number(document.getElementById('nm-amount').value)||null,
+    category_code:document.getElementById('nm-cat').value,
+  },adminToken);
+  document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';
+  loadAdminMeasures();
+}
+async function loadAdminMeasures(){
+  const m=await api('/admin/measures','GET',null,adminToken);
+  document.getElementById('admin-measures').innerHTML=
+    `<b>Всего мер: ${m.length}</b>`+m.slice(-8).reverse().map(x=>
+    `<div class="measure" style="padding:8px"><b>${x.title}</b> <small>${x.level}${x.amount?(' · '+x.amount.toLocaleString('ru')+' ₽'):''}</small></div>`).join('');
+}
+async function loadNotif(){
+  const n=await api('/notifications');
+  if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
+  on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
+  document.getElementById('notif').innerHTML=n.map(x=>
+    `<div class="measure" style="padding:8px;${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
 }
 async function applyBranding(){
   const b=await api('/branding');

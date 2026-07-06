@@ -205,6 +205,7 @@ MEASURES = [
 
 DEMO_USERS = [
     {"role": "coordinator", "phone": "+79180000001", "first_name": "Мария", "last_name": "Соколова", "region_code": "23"},
+    {"role": "admin", "phone": "+79180000002", "first_name": "Администратор", "last_name": "региона", "region_code": "23"},
 ]
 
 

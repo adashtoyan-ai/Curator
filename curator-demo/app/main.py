@@ -32,6 +32,11 @@ def log_event(conn, project_id, event, actor="Гражданин", status=None):
         "INSERT INTO case_events(project_id,event,actor,status,created_at) VALUES(?,?,?,?,?)",
         (project_id, event, actor, status, datetime.utcnow().isoformat()))
 
+def notify(conn, user_id, text):
+    conn.execute(
+        "INSERT INTO notifications(user_id,text,created_at) VALUES(?,?,?)",
+        (user_id, text, datetime.utcnow().isoformat()))
+
 def get_branding(conn):
     b = dict(DEFAULT_BRANDING)
     for r in conn.execute("SELECT key,value FROM settings").fetchall():
@@ -334,6 +339,8 @@ def change_status(aid: int, body: StatusIn, user=Depends(current_user)):
         conn.execute("UPDATE applications SET status=? WHERE id=?", (body.status, aid))
         st_title = next((s["title"] for s in APPLICATION_STATUSES if s["code"] == body.status), body.status)
         log_event(conn, row["project_id"], f"Статус заявки: {st_title}", "Координатор", body.status)
+        m = conn.execute("SELECT title FROM measures WHERE id=?", (row["measure_id"],)).fetchone()
+        notify(conn, row["citizen_id"], f"Статус заявки «{m['title'] if m else ''}»: {st_title}")
     return {"ok": True, "id": aid, "status": body.status}
 
 @app.post("/api/v1/coordinator/login")
@@ -342,6 +349,64 @@ def coordinator_login():
     with get_conn() as conn:
         c = conn.execute("SELECT * FROM users WHERE role='coordinator' LIMIT 1").fetchone()
         return {"token": f"user-{c['id']}", "user": dict(c)}
+
+
+# ---------- MODULE: Notifications ----------
+@app.get("/api/v1/notifications")
+def notifications(user=Depends(current_user)):
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM notifications WHERE user_id=? ORDER BY id DESC", (user["id"],)).fetchall()
+        return [dict(r) for r in rows]
+
+@app.post("/api/v1/notifications/{nid}/read")
+def read_notification(nid: int, user=Depends(current_user)):
+    with get_conn() as conn:
+        conn.execute("UPDATE notifications SET is_read=1 WHERE id=? AND user_id=?", (nid, user["id"]))
+    return {"ok": True}
+
+
+# ---------- MODULE: Admin (управление мерами, White Label) ----------
+@app.post("/api/v1/admin/login")
+def admin_login():
+    with get_conn() as conn:
+        a = conn.execute("SELECT * FROM users WHERE role='admin' LIMIT 1").fetchone()
+        return {"token": f"user-{a['id']}", "user": dict(a)}
+
+@app.get("/api/v1/admin/measures")
+def admin_measures(user=Depends(current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(403, "forbidden")
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT id,code,title,measure_type,level,region_code,authority,amount,is_current FROM measures ORDER BY id").fetchall()
+        return [dict(r) for r in rows]
+
+class MeasureIn(BaseModel):
+    title: str
+    amount: float | None = None
+    category_code: str = "svo_participant"
+    region_code: str = "23"
+    authority: str = "Администрация региона"
+    documents: list[str] = []
+
+@app.post("/api/v1/admin/measures")
+def admin_create_measure(body: MeasureIn, user=Depends(current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(403, "forbidden")
+    elig = {"rules": {"all": [
+        {"field": "categories", "op": "contains_any", "value": [body.category_code]},
+        {"field": "region_code", "op": "eq", "value": body.region_code},
+    ]}, "required_fields": ["categories", "region_code"]}
+    code = "ADM-" + str(abs(hash(body.title)) % 100000)
+    with get_conn() as conn:
+        cur = conn.execute(
+            """INSERT INTO measures(code,title,description,measure_type,level,region_code,
+               authority,amount,eligibility,required_documents,version,is_current)
+               VALUES(?,?,?,?,?,?,?,?,?,?,1,1)""",
+            (code, body.title, "Добавлено администратором региона", "payment", "regional",
+             body.region_code, body.authority, body.amount, jdump(elig), jdump(body.documents)))
+        return {"ok": True, "id": cur.lastrowid, "code": code}
 
 
 # ---------- MODULE: Dashboard (руководитель) ----------

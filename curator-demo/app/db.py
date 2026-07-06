@@ -69,6 +69,10 @@ CREATE TABLE IF NOT EXISTS case_events (
 CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY, value TEXT
 );
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER, text TEXT, is_read INTEGER DEFAULT 0, created_at TEXT
+);
 """
 
 
