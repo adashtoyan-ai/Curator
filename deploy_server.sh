@@ -11,15 +11,16 @@ TARGET="${1:-root@153.80.184.228}"          # ssh user@host
 HOST="${TARGET#*@}"
 APP_DIR="/opt/curator-demo"
 PORT="8090"
+SSH="ssh ${SSH_OPTS:-}"                       # SSH_OPTS='-o BatchMode=yes' для авто-режима
 
 echo "==> 1/4 Копирую демо на сервер ($TARGET:$APP_DIR)"
-ssh "$TARGET" "mkdir -p $APP_DIR"
-rsync -az --delete \
+$SSH "$TARGET" "mkdir -p $APP_DIR"
+rsync -az --delete -e "$SSH" \
   --exclude 'curator.db*' --exclude '__pycache__' --exclude '.git' \
   ./curator-demo/ "$TARGET:$APP_DIR/"
 
 echo "==> 2/4 Ставлю зависимости в виртуальное окружение (venv)"
-ssh "$TARGET" "bash -s" <<EOF
+$SSH "$TARGET" "bash -s" <<EOF
 set -e
 export DEBIAN_FRONTEND=noninteractive
 command -v python3 >/dev/null || { apt-get update -qq && apt-get install -y -qq python3; }
@@ -34,7 +35,7 @@ $APP_DIR/venv/bin/pip install -q -r $APP_DIR/requirements.txt
 EOF
 
 echo "==> 3/4 Создаю systemd-сервис (автозапуск, рестарт)"
-ssh "$TARGET" "bash -s" <<EOF
+$SSH "$TARGET" "bash -s" <<EOF
 set -e
 cat > /etc/systemd/system/curator.service <<UNIT
 [Unit]
@@ -57,7 +58,7 @@ systemctl --no-pager --lines=8 status curator || true
 EOF
 
 echo "==> 4/4 Открываю порт $PORT (если есть ufw)"
-ssh "$TARGET" "command -v ufw >/dev/null && ufw allow $PORT/tcp >/dev/null 2>&1 || true"
+$SSH "$TARGET" "command -v ufw >/dev/null && ufw allow $PORT/tcp >/dev/null 2>&1 || true"
 
 echo ""
 echo "✅ Готово. Демо доступно по адресу:"

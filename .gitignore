@@ -15,3 +15,4 @@ Thumbs.db
 # Прочее
 *.log
 .autosync.log
+.last_deploy_hash
