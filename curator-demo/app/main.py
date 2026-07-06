@@ -8,7 +8,7 @@
 """
 from __future__ import annotations
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.responses import FileResponse
@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .db import get_conn, init_db, jload, jdump
-from .seed import seed, LIFE_EVENTS as SEED_LIFE_EVENTS
+from .seed import seed, seed_synthetic, LIFE_EVENTS as SEED_LIFE_EVENTS
 from . import rule_engine
 
 DEFAULT_BRANDING = {
@@ -54,6 +54,7 @@ app = FastAPI(title="КУРАТОР — демо", version="0.1")
 def _startup():
     init_db()
     seed()
+    seed_synthetic()
 
 
 # ---------- Auth helpers ----------
@@ -439,12 +440,20 @@ def dashboard_summary():
             """SELECT m.title, COUNT(*) c FROM applications a JOIN measures m ON m.id=a.measure_id
                GROUP BY a.measure_id ORDER BY c DESC LIMIT 5""").fetchall()
         total_paid = conn.execute("SELECT COALESCE(SUM(expected_amount),0) s FROM applications WHERE status='paid'").fetchone()["s"]
+        helped = conn.execute("SELECT COUNT(DISTINCT citizen_id) c FROM applications WHERE status='paid'").fetchone()["c"]
+        series = []
+        for dd in range(13, -1, -1):
+            day = (datetime.utcnow() - timedelta(days=dd)).date().isoformat()
+            cnt = conn.execute("SELECT COUNT(*) c FROM applications WHERE substr(created_at,1,10)=?", (day,)).fetchone()["c"]
+            series.append({"day": day[8:10] + "." + day[5:7], "count": cnt})
         return {
             "new_cases": new_cases,
             "active_applications": active_apps,
             "completed": done_cases,
             "total_paid": total_paid,
+            "helped": helped,
             "by_status": by_status,
+            "series": series,
             "top_measures": [{"title": r["title"], "count": r["c"]} for r in top],
         }
 

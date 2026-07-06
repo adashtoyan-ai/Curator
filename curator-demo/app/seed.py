@@ -3,6 +3,8 @@
 ВНИМАНИЕ: суммы и условия — ДЕМОНСТРАЦИОННЫЕ (примерные), для показа механики подбора.
 Перед пилотом администратор заменяет их актуальными данными региона через импорт.
 """
+import random
+from datetime import datetime, timedelta
 from .db import get_conn, jdump
 
 CATEGORIES = [
@@ -227,3 +229,54 @@ def seed():
         for u in DEMO_USERS:
             cur.execute("INSERT OR IGNORE INTO users(role,phone,first_name,last_name,region_code) VALUES(?,?,?,?,?)",
                         (u["role"], u["phone"], u["first_name"], u["last_name"], u["region_code"]))
+
+
+_FIRST = ["Иван","Сергей","Андрей","Дмитрий","Алексей","Николай","Павел","Артём","Владимир","Максим",
+          "Олег","Роман","Юрий","Егор","Денис","Виктор","Анна","Елена","Ольга","Наталья","Марина",
+          "Татьяна","Ирина","Светлана","Людмила","Галина"]
+_LAST = ["Ковалёв","Соколов","Морозов","Волков","Лебедев","Козлов","Новиков","Фёдоров","Никитин","Орлов",
+         "Макаров","Захаров","Борисов","Киселёв","Ильин","Гусев","Титов","Кузьмин","Кудрявцев","Баранов"]
+_STATUS = ["submitted"]*5 + ["in_review"]*4 + ["approved"]*4 + ["paid"]*6 + ["rejected"]*2
+_LIFE = ["svo_return","svo_injury","svo_death","svo_mobilized","childbirth","housing","disability",
+         "large_family","medical","job_search"]
+_EVENTS = ["Создан кейс","Заполнена анкета","Подбор мер поддержки","Поданы документы","Заявка отправлена"]
+
+
+def seed_synthetic(n=38):
+    """Наполнение демо синтетикой: граждане, кейсы, заявки во всех статусах за 14 дней."""
+    with get_conn() as conn:
+        if conn.execute("SELECT COUNT(*) c FROM users WHERE phone LIKE '+7999%'").fetchone()["c"] > 0:
+            return
+        coord = conn.execute("SELECT id FROM users WHERE role='coordinator' LIMIT 1").fetchone()
+        coord_id = coord["id"] if coord else None
+        measures = [dict(r) for r in conn.execute("SELECT id,amount FROM measures WHERE is_current=1").fetchall()]
+        cats = [r["code"] for r in conn.execute("SELECT code FROM citizen_categories").fetchall()]
+        if not measures:
+            return
+        for _ in range(n):
+            fn, ln = random.choice(_FIRST), random.choice(_LAST)
+            phone = f"+7999{random.randint(1000000, 9999999)}"
+            uid = conn.execute(
+                "INSERT INTO users(role,phone,first_name,last_name,region_code,coordinator_id) VALUES('citizen',?,?,?,?,?)",
+                (phone, fn, ln, "23", coord_id)).lastrowid
+            for cc in random.sample(cats, k=random.randint(1, 2)):
+                conn.execute("INSERT OR IGNORE INTO user_categories(user_id,category_code) VALUES(?,?)", (uid, cc))
+            le = random.choice(_LIFE)
+            days = random.randint(0, 13)
+            base = datetime.utcnow() - timedelta(days=days, hours=random.randint(0, 23))
+            pid = conn.execute(
+                "INSERT INTO projects(citizen_id,coordinator_id,title,life_event,status) VALUES(?,?,?,?,'active')",
+                (uid, coord_id, "Кейс сопровождения", le)).lastrowid
+            # события истории кейса
+            for k, ev in enumerate(_EVENTS):
+                conn.execute("INSERT INTO case_events(project_id,event,actor,created_at) VALUES(?,?,?,?)",
+                             (pid, ev, "Система" if k == 2 else "Гражданин",
+                              (base + timedelta(minutes=k * 3)).isoformat()))
+            for _a in range(random.randint(1, 2)):
+                m = random.choice(measures)
+                st = random.choice(_STATUS)
+                ts = (base + timedelta(hours=random.randint(1, 20))).isoformat()
+                conn.execute(
+                    """INSERT INTO applications(project_id,citizen_id,measure_id,measure_version,coordinator_id,status,expected_amount,created_at)
+                       VALUES(?,?,?,1,?,?,?,?)""",
+                    (pid, uid, m["id"], coord_id, st, m["amount"], ts))

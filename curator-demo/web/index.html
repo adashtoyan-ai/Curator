@@ -290,20 +290,18 @@ function spark(color){ // мини-спарклайн SVG
 }
 async function loadStats(){
   const d=await api('/dashboard/summary').catch(()=>({}));
-  const helped=127+(d.completed||0),cases=18+(d.new_cases||0),apps=42+(d.active_applications||0);
   const t=(l,n,d2,cl='var(--accent)')=>`<div class="kpi"><div class="k-l">${l}</div><div class="k-n">${n}</div><div class="k-d">${d2}</div>${spark(cl)}</div>`;
   document.getElementById('kpi').innerHTML=
-    t('Гражданам помогли',helped,'▲ сопровождение активно')+
-    t('Новых кейсов',cases,'▲ за период')+
+    t('Гражданам помогли',d.helped||0,'▲ выплаты проведены')+
+    t('Кейсов сопровождения',d.new_cases||0,'▲ активны')+
     t('Автоподбор','94%','Rule Engine · стабильно','var(--green)')+
-    t('Заявок в работе',apps,'у координаторов','var(--amber)');
+    t('Заявок в работе',d.active_applications||0,'у координаторов','var(--amber)');
 }
 const CH={color:'#7488a6',grid:'rgba(28,43,69,.6)'};
 async function loadDash(){
   const d=await api('/dashboard/summary');
-  // donut
-  const base={submitted:12,in_review:7,approved:9,paid:14,rejected:2};
-  const keys=Object.keys(base); const vals=keys.map(k=>base[k]+((d.by_status||{})[k]||0));
+  const keys=['submitted','in_review','approved','paid','rejected'];
+  const vals=keys.map(k=>(d.by_status||{})[k]||0);
   const colr={submitted:'#38bdf8',in_review:'#f5a524',approved:'#34d399',paid:'#22d3ee',rejected:'#f87171'};
   if(window.Chart){
     chDonut&&chDonut.destroy();
@@ -311,13 +309,12 @@ async function loadDash(){
       data:{labels:keys.map(k=>STATUS_RU[k]),datasets:[{data:vals,backgroundColor:keys.map(k=>colr[k]),
         borderColor:'#0c1422',borderWidth:2,hoverOffset:6}]},
       options:{cutout:'62%',plugins:{legend:{position:'right',labels:{color:CH.color,font:{size:11},boxWidth:12}}}}});
-    // line 14 суток
-    const days=[...Array(14)].map((_,i)=>i+1); let v=6; const series=days.map(()=>{v=Math.max(2,v+Math.round(Math.random()*6-2));return v;});
+    const ser=d.series||[];
     chLine&&chLine.destroy();
     const ctx=document.getElementById('ch-line').getContext('2d');
     const grad=ctx.createLinearGradient(0,0,0,200); grad.addColorStop(0,'rgba(34,211,238,.35)');grad.addColorStop(1,'rgba(34,211,238,0)');
-    chLine=new Chart(ctx,{type:'line',data:{labels:days.map(d=>'Д'+d),
-      datasets:[{data:series,borderColor:'#22d3ee',backgroundColor:grad,fill:true,tension:.4,pointRadius:0,borderWidth:2}]},
+    chLine=new Chart(ctx,{type:'line',data:{labels:ser.map(p=>p.day),
+      datasets:[{data:ser.map(p=>p.count),borderColor:'#22d3ee',backgroundColor:grad,fill:true,tension:.4,pointRadius:0,borderWidth:2}]},
       options:{plugins:{legend:{display:false}},scales:{
         x:{ticks:{color:CH.color,font:{size:10}},grid:{color:CH.grid}},
         y:{ticks:{color:CH.color,font:{size:10}},grid:{color:CH.grid},beginAtZero:true}}}});
