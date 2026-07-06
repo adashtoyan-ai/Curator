@@ -4,119 +4,168 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>КУРАТОР — цифровое сопровождение граждан</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#eef1f6; --sidebar:#0d1b2a; --sidebar-2:#132538; --side-tx:#9fb0c3; --side-hi:#e8eef6;
-    --accent:#2563eb; --accent-d:#1d4ed8; --card:#fff; --line:#e4e8ef; --line-2:#eef1f5;
-    --text:#111a27; --muted:#64748b; --ok:#0f7a4d; --ok-bg:#e7f4ee; --warn:#8a6410;
-    --warn-bg:#f7efd9; --dng:#b4342a; --dng-bg:#fbeae8;
-    --r:10px; --shadow:0 1px 2px rgba(15,27,42,.06);
+    --bg:#05080f; --bg-2:#070c16; --panel:#0c1422; --panel-2:#0f1a2c;
+    --line:#1a2b47; --grid:#0e1a2e; --tx:#dbe6f5; --muted:#7488a6; --dim:#4a5c78;
+    --accent:#22d3ee; --accent-2:#38bdf8; --amber:#f5a524; --green:#34d399; --danger:#f87171;
+    --glow:0 0 24px rgba(34,211,238,.20);
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Chakra Petch',-apple-system,system-ui,sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Inter",Arial,sans-serif;
-    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
-  .num{font-variant-numeric:tabular-nums}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 78% -8%, rgba(34,211,238,.10), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(56,189,248,.08), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg-2));
+    color:var(--tx);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+  body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px;mask:radial-gradient(circle at 50% 30%,#000,transparent 85%)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .disp{font-family:var(--disp);letter-spacing:.5px}
 
-  .app{display:flex;min-height:100vh}
+  .app{display:flex;min-height:100vh;position:relative;z-index:1}
   /* ---- Sidebar ---- */
-  .sidebar{width:248px;flex:0 0 auto;background:linear-gradient(180deg,var(--sidebar),var(--sidebar-2));
-    color:var(--side-tx);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .brand{display:flex;align-items:center;gap:11px;padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
-  .brand .mk{width:36px;height:36px;border-radius:9px;background:var(--accent);color:#fff;display:flex;
-    align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;font-size:16px}
-  .brand .bt{color:var(--side-hi);font-weight:700;letter-spacing:.4px;line-height:1.1}
-  .brand .br{font-size:11.5px;color:var(--side-tx)}
-  .snav{padding:14px 12px;display:flex;flex-direction:column;gap:3px}
-  .snav .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:#61748b;padding:10px 12px 6px}
-  .navi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;
-    color:var(--side-tx);font-weight:600;font-size:13.5px;transition:.12s}
-  .navi:hover{background:rgba(255,255,255,.06);color:var(--side-hi)}
-  .navi.active{background:var(--accent);color:#fff}
-  .navi .ic{width:18px;text-align:center;opacity:.9}
-  .side-foot{margin-top:auto;padding:16px 20px;font-size:11.5px;color:#56697f;border-top:1px solid rgba(255,255,255,.07)}
-  .side-foot b{color:#8fa2b8}
+  .sidebar{width:256px;flex:0 0 auto;background:linear-gradient(180deg,rgba(10,17,30,.96),rgba(7,12,22,.98));
+    border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+    backdrop-filter:blur(6px)}
+  .brand{display:flex;align-items:center;gap:12px;padding:20px 20px 18px;border-bottom:1px solid var(--line)}
+  .brand .mk{width:40px;height:40px;border-radius:11px;background:linear-gradient(145deg,#0b2a3a,#0a1a2c);
+    border:1px solid #1f6f83;color:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex:0 0 auto;box-shadow:var(--glow)}
+  .brand .bt{font-family:var(--disp);font-weight:700;letter-spacing:2px;color:#eaf6ff;font-size:16px}
+  .brand .br{font-size:11px;color:var(--muted);letter-spacing:.5px}
+  .sys{display:flex;align-items:center;gap:8px;margin:14px 20px 4px;font-size:11px;color:var(--muted);
+    letter-spacing:1px;text-transform:uppercase}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);
+    animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .snav{padding:8px 12px;display:flex;flex-direction:column;gap:4px}
+  .snav .lbl{font-size:10px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;padding:12px 12px 6px}
+  .navi{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:9px;cursor:pointer;
+    color:var(--muted);font-family:var(--disp);font-weight:500;font-size:14px;letter-spacing:.5px;
+    border:1px solid transparent;position:relative;transition:.15s}
+  .navi:hover{background:rgba(34,211,238,.06);color:#cfe9f2}
+  .navi.active{background:linear-gradient(90deg,rgba(34,211,238,.14),rgba(34,211,238,.03));
+    color:#eaffff;border-color:rgba(34,211,238,.35);box-shadow:inset 0 0 20px rgba(34,211,238,.08)}
+  .navi.active:before{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:2px;background:var(--accent);
+    box-shadow:0 0 10px var(--accent)}
+  .navi .ic{width:18px;text-align:center;font-size:15px}
+  .side-foot{margin-top:auto;padding:16px 20px;font-size:10.5px;color:var(--dim);letter-spacing:.5px;
+    border-top:1px solid var(--line);font-family:var(--mono)}
 
   /* ---- Content ---- */
   .content{flex:1;min-width:0;display:flex;flex-direction:column}
-  .pagebar{background:#fff;border-bottom:1px solid var(--line);padding:15px 28px;display:flex;
-    align-items:center;gap:14px;position:sticky;top:0;z-index:10}
-  .pagebar .ptitle{font-size:16px;font-weight:700}
-  .pagebar .psub{color:var(--muted);font-size:12.5px}
-  .pagebar .spacer{margin-left:auto}
-  .chip{font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 9px;border-radius:6px;
-    background:#eef2f8;color:var(--accent-d);text-transform:uppercase}
-  main{padding:24px 28px 60px;max-width:1120px;width:100%}
+  .pagebar{padding:16px 30px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(12,20,34,.6),transparent);backdrop-filter:blur(4px);
+    position:sticky;top:0;z-index:10}
+  .ptitle{font-family:var(--disp);font-size:17px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+  .psub{color:var(--muted);font-size:12px;letter-spacing:.3px}
+  .pbadge{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .clock{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:1px}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;padding:5px 10px;border-radius:6px;
+    border:1px solid rgba(34,211,238,.35);color:var(--accent);text-transform:uppercase;
+    background:rgba(34,211,238,.06)}
+  main{padding:26px 30px 70px;max-width:1200px;width:100%}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
-    margin-bottom:16px;box-shadow:var(--shadow)}
-  .card h2{font-size:13px;margin:0 0 14px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#334155}
-  .card .desc{color:var(--muted);font-size:12.5px;margin:-8px 0 14px}
+  /* HUD panel */
+  .card{position:relative;background:linear-gradient(180deg,rgba(15,26,44,.82),rgba(11,19,33,.9));
+    border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:18px;
+    box-shadow:0 6px 30px rgba(0,0,0,.35)}
+  .card:before,.card:after{content:"";position:absolute;width:14px;height:14px;border:1.5px solid rgba(34,211,238,.5);
+    pointer-events:none}
+  .card:before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-radius:12px 0 0 0}
+  .card:after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-radius:0 0 12px 0}
+  .card h2{font-family:var(--disp);font-size:12px;margin:0 0 15px;font-weight:600;text-transform:uppercase;
+    letter-spacing:1.4px;color:#9fd8e6;display:flex;align-items:center;gap:8px}
+  .card h2:before{content:"";width:6px;height:6px;background:var(--accent);box-shadow:0 0 8px var(--accent);border-radius:1px}
+  .card .desc{color:var(--muted);font-size:12px;margin:-8px 0 15px}
 
-  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;cursor:pointer;
-    font-size:13.5px;font-weight:600;transition:.12s}
-  button:hover{background:var(--accent-d)} button:active{transform:translateY(1px)}
-  button.ghost{background:#fff;color:var(--accent-d);border:1px solid var(--line)}
-  button.ghost:hover{background:#f3f6fb;border-color:#d3dbe6}
-  button.sm{padding:7px 12px;font-size:12.5px}
-  input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;width:100%;
-    margin:5px 0;background:#fff;color:var(--text);transition:.12s}
-  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
-  label{font-size:13px;display:block;margin:9px 0;font-weight:500;color:#33415a}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  button{font-family:var(--disp);background:linear-gradient(180deg,rgba(34,211,238,.16),rgba(34,211,238,.05));
+    color:#d6fbff;border:1px solid rgba(34,211,238,.45);border-radius:8px;padding:10px 18px;cursor:pointer;
+    font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;transition:.15s}
+  button:hover{border-color:var(--accent);box-shadow:0 0 18px rgba(34,211,238,.25);color:#eaffff}
+  button:active{transform:translateY(1px)}
+  button.ghost{background:rgba(255,255,255,.02);color:var(--muted);border-color:var(--line)}
+  button.ghost:hover{color:#cfe9f2;border-color:rgba(34,211,238,.4);box-shadow:none}
+  button.sm{padding:7px 12px;font-size:11.5px}
+  input,select{font-family:inherit;padding:11px 13px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;
+    width:100%;margin:5px 0;background:rgba(5,10,20,.7);color:var(--tx);transition:.15s}
+  input::placeholder{color:var(--dim)}
+  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+  label{font-size:12.5px;display:block;margin:9px 0;font-weight:500;color:#93a7c2;letter-spacing:.3px}
+  option{background:#0c1422}
+  .row{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
   small{color:var(--muted)}
 
-  /* KPI tiles */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
-  .kpi .k-l{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-  .kpi .k-n{font-size:28px;font-weight:800;color:var(--text);margin-top:6px;letter-spacing:-.5px}
-  .kpi .k-n.ac{color:var(--accent)}
-  .kpi .k-d{font-size:11.5px;color:var(--ok);margin-top:3px}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+  .kpi{position:relative;background:linear-gradient(180deg,rgba(15,26,44,.85),rgba(11,19,33,.92));
+    border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:hidden}
+  .kpi:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.7}
+  .kpi .k-l{font-size:10px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase}
+  .kpi .k-n{font-family:var(--mono);font-size:30px;font-weight:700;color:#eafcff;margin-top:6px;line-height:1;
+    text-shadow:0 0 18px rgba(34,211,238,.35)}
+  .kpi .k-d{font-size:11px;color:var(--green);margin-top:6px;font-family:var(--mono)}
+  .kpi svg{position:absolute;right:12px;bottom:10px;opacity:.9}
 
-  /* route stepper */
-  .route{display:flex;align-items:flex-start}
+  .chartgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin-bottom:18px}
+  .chartbox{position:relative;height:220px}
+
+  /* route */
+  .route{display:flex;align-items:flex-start;padding:6px 0}
   .rstep{flex:1;text-align:center;position:relative}
-  .rstep .rdot{width:14px;height:14px;border-radius:50%;background:#cfd8e6;margin:0 auto 8px;
-    outline:3px solid #eef1f6;transition:.25s}
-  .rstep.done .rdot{background:var(--accent)} .rstep.cur .rdot{background:var(--accent);outline-color:rgba(37,99,235,.25)}
-  .rstep small{font-size:11.5px;color:var(--muted)} .rstep.done small,.rstep.cur small{color:var(--text);font-weight:600}
-  .rstep:not(:last-child):before{content:"";position:absolute;top:6px;left:50%;width:100%;height:2px;background:#dbe2ec}
-  .rstep.done:not(:last-child):before{background:var(--accent)}
+  .rstep .rdot{width:16px;height:16px;border-radius:50%;background:#12233c;border:2px solid #24405f;margin:0 auto 9px;transition:.3s}
+  .rstep.done .rdot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .rstep.cur .rdot{background:#0a1a2c;border-color:var(--accent);box-shadow:0 0 0 4px rgba(34,211,238,.2),0 0 14px var(--accent)}
+  .rstep small{font-size:11px;color:var(--muted);letter-spacing:.5px}
+  .rstep.done small,.rstep.cur small{color:#cfe9f2;font-weight:600}
+  .rstep:not(:last-child):before{content:"";position:absolute;top:7px;left:50%;width:100%;height:2px;background:#1c3049}
+  .rstep.done:not(:last-child):before{background:linear-gradient(90deg,var(--accent),#1c3049);box-shadow:0 0 8px rgba(34,211,238,.4)}
 
-  /* lists / tables */
-  .item{border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin:9px 0;background:#fff}
-  .item:hover{border-color:#d7dfea}
+  .item{border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin:10px 0;
+    background:linear-gradient(180deg,rgba(16,27,46,.6),rgba(11,19,33,.7));transition:.15s}
+  .item:hover{border-color:rgba(34,211,238,.35);box-shadow:inset 0 0 22px rgba(34,211,238,.05)}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
-    letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--line)}
-  td{padding:11px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
-  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600}
-  .eligible{background:var(--ok-bg);color:var(--ok)} .conditional{background:var(--warn-bg);color:var(--warn)}
-  .need_info{background:#eef1f5;color:var(--muted)}
-  .st-submitted{background:#e6edfa;color:var(--accent-d)}.st-in_review{background:var(--warn-bg);color:var(--warn)}
-  .st-approved{background:var(--ok-bg);color:var(--ok)}.st-paid{background:#dcefe6;color:#0c5f3c}
-  .st-rejected{background:var(--dng-bg);color:var(--dng)}
-  .score{font-weight:700;color:var(--accent)} .amount{font-weight:700;color:var(--text);margin-left:8px}
-  .explain{font-size:13px;margin-top:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:12px 14px}
-  .explain .ok{color:var(--ok)} .explain .no{color:var(--dng)} .explain .need{color:var(--warn)}
+  th{text-align:left;color:var(--muted);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;
+    padding:9px 10px;border-bottom:1px solid var(--line);font-family:var(--disp)}
+  td{padding:11px 10px;border-bottom:1px solid rgba(28,43,69,.5)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;
+    font-family:var(--mono);letter-spacing:.3px;border:1px solid transparent}
+  .eligible{background:rgba(52,211,153,.12);color:var(--green);border-color:rgba(52,211,153,.3)}
+  .conditional{background:rgba(245,165,36,.12);color:var(--amber);border-color:rgba(245,165,36,.3)}
+  .need_info{background:rgba(116,136,166,.12);color:var(--muted);border-color:rgba(116,136,166,.25)}
+  .st-submitted{background:rgba(56,189,248,.12);color:var(--accent-2);border-color:rgba(56,189,248,.3)}
+  .st-in_review{background:rgba(245,165,36,.12);color:var(--amber);border-color:rgba(245,165,36,.3)}
+  .st-approved{background:rgba(52,211,153,.12);color:var(--green);border-color:rgba(52,211,153,.3)}
+  .st-paid{background:rgba(34,211,238,.14);color:var(--accent);border-color:rgba(34,211,238,.35)}
+  .st-rejected{background:rgba(248,113,113,.12);color:var(--danger);border-color:rgba(248,113,113,.3)}
+  .score{font-family:var(--mono);font-weight:700;color:var(--accent)} .amount{font-family:var(--mono);font-weight:700;color:#eafcff;margin-left:8px}
+  .explain{font-size:13px;margin-top:11px;background:rgba(5,10,20,.5);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+  .explain .ok{color:var(--green)} .explain .no{color:var(--danger)} .explain .need{color:var(--amber)}
   .hidden{display:none}
-  .step{opacity:.45;pointer-events:none;transition:opacity .25s} .step.on{opacity:1;pointer-events:auto}
+  .step{opacity:.4;pointer-events:none;transition:opacity .25s} .step.on{opacity:1;pointer-events:auto}
   ol{margin:6px 0 0;padding-left:20px} li{margin:3px 0}
 
-  /* timeline */
-  .tl-item{display:flex;gap:13px}
-  .tl-time{flex:0 0 42px;text-align:right;color:var(--muted);font-size:12px;padding-top:1px}
+  .tl-item{display:flex;gap:14px}
+  .tl-time{flex:0 0 44px;text-align:right;color:var(--accent);font-size:11.5px;padding-top:1px;font-family:var(--mono)}
   .tl-rail{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
-  .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:5px;outline:3px solid #eaf0fb}
-  .tl-line{width:2px;flex:1;background:var(--line);margin:3px 0}
-  .tl-body{padding-bottom:15px}
+  .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:5px;box-shadow:0 0 10px var(--accent)}
+  .tl-line{width:2px;flex:1;background:linear-gradient(var(--accent),#1c3049);margin:3px 0;opacity:.5}
+  .tl-body{padding-bottom:16px}
 
-  @media(max-width:860px){
+  @media(max-width:900px){
     .app{flex-direction:column} .sidebar{width:100%;height:auto;position:static;flex-direction:row;
-      align-items:center;overflow-x:auto} .brand{border:0;padding:12px 16px}
-    .snav{flex-direction:row;padding:8px} .snav .lbl{display:none} .side-foot{display:none}
-    .kpis{grid-template-columns:repeat(2,1fr)}
+      align-items:center;overflow-x:auto} .brand{border:0} .snav{flex-direction:row;padding:8px}
+    .snav .lbl,.sys,.side-foot{display:none}
+    .kpis{grid-template-columns:repeat(2,1fr)} .chartgrid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -125,56 +174,50 @@
   <aside class="sidebar">
     <div class="brand"><div class="mk" id="emblem">🛡️</div>
       <div><div class="bt" id="sysname">КУРАТОР</div><div class="br" id="regionname">Краснодарский край</div></div></div>
+    <div class="sys"><span class="dot"></span> Система · онлайн</div>
     <nav class="snav">
       <div class="lbl">Разделы</div>
-      <div class="navi active" data-tab="citizen" onclick="switchTab('citizen')"><span class="ic">◱</span> Гражданин</div>
-      <div class="navi" data-tab="coordinator" onclick="switchTab('coordinator')"><span class="ic">◨</span> Координатор</div>
+      <div class="navi active" data-tab="citizen" onclick="switchTab('citizen')"><span class="ic">◈</span> Гражданин</div>
+      <div class="navi" data-tab="coordinator" onclick="switchTab('coordinator')"><span class="ic">⬡</span> Координатор</div>
       <div class="navi" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="ic">▤</span> Аналитика</div>
       <div class="navi" data-tab="admin" onclick="switchTab('admin')"><span class="ic">⚙</span> Администрирование</div>
     </nav>
-    <div class="side-foot">Демонстрационная среда<br><b>КУРАТОР</b> · MVP v1.2</div>
+    <div class="side-foot">MODULE · CURATOR-CORE<br>BUILD MVP v1.2 · SECTOR 23</div>
   </aside>
 
   <div class="content">
     <div class="pagebar">
-      <div><div class="ptitle" id="ptitle">Личный кабинет гражданина</div>
+      <div><div class="ptitle disp" id="ptitle">Личный кабинет гражданина</div>
         <div class="psub" id="psub">Подбор и оформление мер государственной поддержки</div></div>
-      <div class="spacer"></div><div class="chip">demo</div>
+      <div class="pbadge"><span class="clock" id="clock">—</span><span class="chip">demo · region 23</span></div>
     </div>
 
     <main id="citizen">
-      <div class="card" id="c-login"><h2>Вход</h2>
+      <div class="card" id="c-login"><h2>Идентификация</h2>
         <div class="desc">Демо-режим: вход в любую роль в один клик, без SMS.</div>
-        <button onclick="login()">Войти как гражданин</button>
-        <small id="otp-hint"></small></div>
-
+        <button onclick="login()">Войти как гражданин</button><small id="otp-hint"></small></div>
       <div class="card step hidden" id="c-notif"><h2>Уведомления</h2><div id="notif"></div></div>
-
       <div class="card step" id="c-cats"><h2>Категории гражданина</h2>
         <div class="desc">Определяют доступные меры поддержки.</div><div id="cats"></div>
         <div style="height:10px"></div><button onclick="saveCats()">Сохранить</button></div>
-
       <div class="card step" id="c-case"><h2>Жизненная ситуация</h2>
         <select id="life_event"></select><div style="height:10px"></div><button onclick="createCase()">Создать кейс</button></div>
-
       <div class="card step" id="c-quest"><h2>Анкета</h2><div id="quest"></div>
         <div style="height:10px"></div><button onclick="saveQuest()">Подобрать меры поддержки</button></div>
-
       <div class="card step" id="c-route"><h2>Маршрут сопровождения</h2><div id="route"></div></div>
-
       <div class="card step" id="c-results"><h2>Рекомендованные меры</h2><div id="results"></div></div>
-
       <div class="card step" id="c-apps"><h2>Мои заявки</h2><div id="apps"></div></div>
-
-      <div class="card step" id="c-timeline"><h2>История сопровождения</h2>
-        <div id="timeline" style="margin-top:6px"></div></div>
+      <div class="card step" id="c-timeline"><h2>История сопровождения</h2><div id="timeline" style="margin-top:6px"></div></div>
     </main>
 
     <main id="dashboard" class="hidden">
       <div class="kpis" id="kpi"></div>
-      <div class="card"><h2>Заявки по статусам</h2><div id="dash-status"></div></div>
+      <div class="chartgrid">
+        <div class="card"><h2>Заявки по статусам</h2><div class="chartbox"><canvas id="ch-donut"></canvas></div></div>
+        <div class="card"><h2>Динамика заявок · 14 суток</h2><div class="chartbox"><canvas id="ch-line"></canvas></div></div>
+      </div>
       <div class="card"><h2>Наиболее востребованные меры</h2><div id="dash-top"></div>
-        <div style="height:12px"></div><button class="ghost sm" onclick="loadDash()">Обновить</button></div>
+        <div style="height:12px"></div><button class="ghost sm" onclick="loadDash()">Обновить телеметрию</button></div>
     </main>
 
     <main id="admin" class="hidden">
@@ -185,7 +228,7 @@
         <div class="desc">Настройка внешнего вида под регион без изменения кода.</div>
         <div class="row"><div style="flex:1;min-width:220px"><label>Название региона<input id="b-region" value="Краснодарский край"></label></div>
           <div style="flex:1;min-width:220px"><label>Символ (эмодзи)<input id="b-emblem" value="🛡️"></label></div></div>
-        <div class="row"><div style="flex:1;min-width:220px"><label>Основной цвет (hex)<input id="b-color" value="#2563eb"></label></div>
+        <div class="row"><div style="flex:1;min-width:220px"><label>Основной цвет (hex)<input id="b-color" value="#22d3ee"></label></div>
           <div style="flex:2;min-width:260px"><label>Приветствие<input id="b-welcome" value="Цифровое сопровождение участников СВО и членов их семей"></label></div></div>
         <div style="height:6px"></div><button onclick="saveBranding()">Применить</button></div>
       <div class="card" id="admin-meas-card" style="display:none"><h2>Реестр мер поддержки</h2>
@@ -207,10 +250,9 @@
 </div>
 
 <script>
-let token=null, coordToken=null, adminToken=null, projectId=null, lastResults=[], STATUSES=[];
+let token=null,coordToken=null,adminToken=null,projectId=null,lastResults=[],STATUSES=[],chDonut=null,chLine=null;
 const api=(p,m='GET',b=null,t=token)=>fetch('/api/v1'+p,{method:m,
-  headers:{'Content-Type':'application/json',...(t?{'Authorization':'Bearer '+t}:{})},
-  body:b?JSON.stringify(b):null}).then(r=>r.json());
+  headers:{'Content-Type':'application/json',...(t?{'Authorization':'Bearer '+t}:{})},body:b?JSON.stringify(b):null}).then(r=>r.json());
 const on=id=>document.getElementById(id).classList.add('on');
 const rub=v=>(v||0).toLocaleString('ru')+' ₽';
 const CAT_RU={eligible:'Положено',conditional:'Скорее всего положено',need_info:'Нужны данные'};
@@ -218,8 +260,12 @@ const STATUS_RU={submitted:'Подана',in_review:'На проверке',appr
 const TABS=['citizen','coordinator','dashboard','admin'];
 const TITLES={citizen:['Личный кабинет гражданина','Подбор и оформление мер государственной поддержки'],
   coordinator:['Рабочее место координатора','Сопровождение подопечных граждан'],
-  dashboard:['Аналитика региона','Ключевые показатели сопровождения'],
+  dashboard:['Центр аналитики','Телеметрия сопровождения в реальном времени'],
   admin:['Администрирование','Управление мерами поддержки и брендированием']};
+
+/* clock */
+setInterval(()=>{const d=new Date();document.getElementById('clock').textContent=
+  d.toLocaleTimeString('ru',{hour12:false})+' UTC'+(d.getTimezoneOffset()<=0?'+':'')+(-d.getTimezoneOffset()/60);},1000);
 
 function switchTab(t){
   document.querySelectorAll('.navi').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
@@ -227,9 +273,8 @@ function switchTab(t){
   document.getElementById('ptitle').textContent=TITLES[t][0];
   document.getElementById('psub').textContent=TITLES[t][1];
   if(t==='dashboard'){loadStats();loadDash();}
-  if(t==='citizen' && token) loadNotif();
+  if(t==='citizen'&&token) loadNotif();
 }
-
 async function applyBranding(){
   const b=await api('/branding');
   document.getElementById('sysname').textContent=b.system_name;
@@ -238,152 +283,127 @@ async function applyBranding(){
   document.documentElement.style.setProperty('--accent',b.color_primary);
   document.title=b.system_name+' — '+b.region_name;
 }
+function spark(color){ // мини-спарклайн SVG
+  let p='',y=18; const pts=[]; for(let i=0;i<10;i++){y=Math.max(4,Math.min(24,y+(Math.random()*10-4)));pts.push([i*7,28-y]);}
+  p=pts.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' ');
+  return `<svg width="72" height="30"><path d="${p}" fill="none" stroke="${color}" stroke-width="1.6" opacity=".85"/></svg>`;
+}
 async function loadStats(){
   const d=await api('/dashboard/summary').catch(()=>({}));
-  const helped=127+(d.completed||0), cases=18+(d.new_cases||0), apps=42+(d.active_applications||0);
-  const t=(l,n,cls='',d2='')=>`<div class="kpi"><div class="k-l">${l}</div><div class="k-n ${cls} num">${n}</div>${d2?`<div class="k-d">${d2}</div>`:''}</div>`;
+  const helped=127+(d.completed||0),cases=18+(d.new_cases||0),apps=42+(d.active_applications||0);
+  const t=(l,n,d2,cl='var(--accent)')=>`<div class="kpi"><div class="k-l">${l}</div><div class="k-n">${n}</div><div class="k-d">${d2}</div>${spark(cl)}</div>`;
   document.getElementById('kpi').innerHTML=
-    t('Гражданам помогли',helped,'ac','сопровождение ведётся')+
-    t('Новых кейсов',cases,'','за период')+
-    t('Подобрано автоматически','94%','ac','Rule Engine')+
-    t('Заявок на рассмотрении',apps,'','в работе координаторов');
+    t('Гражданам помогли',helped,'▲ сопровождение активно')+
+    t('Новых кейсов',cases,'▲ за период')+
+    t('Автоподбор','94%','Rule Engine · стабильно','var(--green)')+
+    t('Заявок в работе',apps,'у координаторов','var(--amber)');
 }
-applyBranding();
-
-/* ---- Гражданин ---- */
-async function login(){
-  const v=await api('/citizen/login','POST',{});
-  token='user-'+v.user.id; on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
-  document.getElementById('c-cats').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-async function loadCats(){
-  const cats=await api('/dictionaries/citizen_categories');
-  document.getElementById('cats').innerHTML=cats.map(c=>
-    `<label style="font-weight:400"><input type=checkbox value="${c.code}" style="width:auto;margin-right:6px"> ${c.title} <small>(${c.level})</small></label>`).join('');
-}
-async function saveCats(){
-  const sel=[...document.querySelectorAll('#cats input:checked')].map(i=>i.value);
-  await api('/users/me/categories','PUT',{categories:sel}); on('c-case');
-}
-async function loadLifeEvents(){
-  const le=await api('/life_events');
-  document.getElementById('life_event').innerHTML=le.map(e=>`<option value="${e.code}">${e.title}</option>`).join('');
-}
-async function createCase(){
-  const p=await api('/projects','POST',{life_event:document.getElementById('life_event').value});
-  projectId=p.id; on('c-quest'); loadQuest(); on('c-route'); renderRoute('start');
-}
-async function loadQuest(){
-  const q=await api('/projects/'+projectId+'/questionnaire'); let html='';
-  q.schema.forEach(s=>{html+=`<b>${s.title}</b>`;s.questions.forEach(qq=>{
-    if(qq.type==='bool') html+=`<label style="font-weight:400"><input type=checkbox data-code="${qq.code}" style="width:auto;margin-right:6px"> ${qq.label}</label>`;
-    else html+=`<label>${qq.label}<input data-code="${qq.code}" type="number"></label>`;});});
-  document.getElementById('quest').innerHTML=html;
-}
-async function saveQuest(){
-  const answers={};
-  document.querySelectorAll('#quest [data-code]').forEach(el=>{answers[el.dataset.code]=el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
-  await api('/projects/'+projectId+'/questionnaire','PUT',{answers});
-  const r=await api('/projects/'+projectId+'/matching/run','POST',{});
-  lastResults=r.results; on('c-results'); renderResults(); renderRoute('matched');
-  document.getElementById('c-results').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-const ROUTE=['Обращение','Подбор','Документы','Проверка','Выплата'];
-function stageOf(s){return {start:0,matched:1,submitted:2,in_review:3,approved:3,paid:4}[s]??0;}
-function renderRoute(s){const cur=stageOf(s);
-  document.getElementById('route').innerHTML='<div class="route">'+ROUTE.map((x,i)=>
-    `<div class="rstep ${i<cur?'done':''} ${i===cur?'cur':''}"><div class="rdot"></div><small>${x}</small></div>`).join('')+'</div>';}
-function renderResults(){
-  document.getElementById('results').innerHTML=lastResults.map((m,i)=>`
-    <div class="item">
-      <div class="row" style="justify-content:space-between"><b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
-      <div style="margin-top:5px"><span class="score num">Соответствие ${m.score}%</span>${m.amount?('<span class="amount num">'+rub(m.amount)+'</span>'):''}</div>
-      <div class="row" style="margin-top:10px"><button class="ghost sm" onclick="toggleWhy(${i})">Почему именно эта мера?</button><button class="sm" onclick="apply(${m.measure_id})">Подать заявку</button></div>
-      <div class="explain hidden" id="why-${i}">
-        ${m.matched.map(x=>'<div class="ok">✓ '+x.rule+'</div>').join('')}
-        ${m.unmet.map(x=>'<div class="no">✗ '+x.rule+'</div>').join('')}
-        ${m.missing.map(x=>'<div class="need">⚠ Не хватает: '+x.field+'</div>').join('')}
-        <div style="margin-top:6px"><b>Что дальше:</b> ${m.next_step||'—'}</div><div><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}</div>
-      </div></div>`).join('')||'<small>Подходящих мер не найдено.</small>';
-}
-function toggleWhy(i){document.getElementById('why-'+i).classList.toggle('hidden');}
-async function apply(measure_id){
-  await api('/applications','POST',{project_id:projectId,measure_id});
-  on('c-apps'); loadApps(); on('c-timeline'); loadTimeline(); renderRoute('submitted');
-}
-async function loadApps(){
-  const a=await api('/applications'); if(a.length) renderRoute(a[a.length-1].status);
-  document.getElementById('apps').innerHTML=a.map(x=>
-    `<div class="item"><b>${x.measure_title}</b> <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span>${x.expected_amount?('<span class="amount num">'+rub(x.expected_amount)+'</span>'):''}</div>`).join('')||'<small>Заявок нет.</small>';
-}
-async function loadNotif(){
-  const n=await api('/notifications');
-  if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
-  on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
-  document.getElementById('notif').innerHTML=n.map(x=>`<div class="item" style="${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
-}
-const hhmm=iso=>{try{const d=new Date(iso+'Z');return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}catch(e){return '';}};
-async function loadTimeline(){
-  const t=await api('/projects/'+projectId+'/timeline');
-  document.getElementById('timeline').innerHTML=t.map((e,i)=>
-    `<div class="tl-item"><div class="tl-time num">${hhmm(e.created_at)}</div>
-       <div class="tl-rail"><div class="tl-dot"></div>${i<t.length-1?'<div class="tl-line"></div>':''}</div>
-       <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div></div>`).join('')||'<small>Событий пока нет.</small>';
-}
-
-/* ---- Аналитика ---- */
+const CH={color:'#7488a6',grid:'rgba(28,43,69,.6)'};
 async function loadDash(){
   const d=await api('/dashboard/summary');
-  document.getElementById('dash-status').innerHTML=`<div class="row">${Object.entries(d.by_status).map(([k,v])=>
-    `<span class="badge st-${k}" style="font-size:12.5px">${STATUS_RU[k]||k}: <span class="num">${v}</span></span>`).join('')}</div>`;
+  // donut
+  const base={submitted:12,in_review:7,approved:9,paid:14,rejected:2};
+  const keys=Object.keys(base); const vals=keys.map(k=>base[k]+((d.by_status||{})[k]||0));
+  const colr={submitted:'#38bdf8',in_review:'#f5a524',approved:'#34d399',paid:'#22d3ee',rejected:'#f87171'};
+  if(window.Chart){
+    chDonut&&chDonut.destroy();
+    chDonut=new Chart(document.getElementById('ch-donut'),{type:'doughnut',
+      data:{labels:keys.map(k=>STATUS_RU[k]),datasets:[{data:vals,backgroundColor:keys.map(k=>colr[k]),
+        borderColor:'#0c1422',borderWidth:2,hoverOffset:6}]},
+      options:{cutout:'62%',plugins:{legend:{position:'right',labels:{color:CH.color,font:{size:11},boxWidth:12}}}}});
+    // line 14 суток
+    const days=[...Array(14)].map((_,i)=>i+1); let v=6; const series=days.map(()=>{v=Math.max(2,v+Math.round(Math.random()*6-2));return v;});
+    chLine&&chLine.destroy();
+    const ctx=document.getElementById('ch-line').getContext('2d');
+    const grad=ctx.createLinearGradient(0,0,0,200); grad.addColorStop(0,'rgba(34,211,238,.35)');grad.addColorStop(1,'rgba(34,211,238,0)');
+    chLine=new Chart(ctx,{type:'line',data:{labels:days.map(d=>'Д'+d),
+      datasets:[{data:series,borderColor:'#22d3ee',backgroundColor:grad,fill:true,tension:.4,pointRadius:0,borderWidth:2}]},
+      options:{plugins:{legend:{display:false}},scales:{
+        x:{ticks:{color:CH.color,font:{size:10}},grid:{color:CH.grid}},
+        y:{ticks:{color:CH.color,font:{size:10}},grid:{color:CH.grid},beginAtZero:true}}}});
+  }
   document.getElementById('dash-top').innerHTML=d.top_measures.length
     ? '<table><thead><tr><th>Мера поддержки</th><th style="text-align:right">Заявок</th></tr></thead><tbody>'+
       d.top_measures.map(m=>`<tr><td>${m.title}</td><td style="text-align:right" class="num">${m.count}</td></tr>`).join('')+'</tbody></table>'
     : '<small>Пока нет данных.</small>';
 }
+applyBranding();
+
+/* ---- Гражданин ---- */
+async function login(){
+  const v=await api('/citizen/login','POST',{}); token='user-'+v.user.id;
+  on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
+  document.getElementById('c-cats').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+async function loadCats(){
+  const cats=await api('/dictionaries/citizen_categories');
+  document.getElementById('cats').innerHTML=cats.map(c=>
+    `<label style="font-weight:400"><input type=checkbox value="${c.code}" style="width:auto;margin-right:7px"> ${c.title} <small>(${c.level})</small></label>`).join('');
+}
+async function saveCats(){const sel=[...document.querySelectorAll('#cats input:checked')].map(i=>i.value);await api('/users/me/categories','PUT',{categories:sel});on('c-case');}
+async function loadLifeEvents(){const le=await api('/life_events');document.getElementById('life_event').innerHTML=le.map(e=>`<option value="${e.code}">${e.title}</option>`).join('');}
+async function createCase(){const p=await api('/projects','POST',{life_event:document.getElementById('life_event').value});projectId=p.id;on('c-quest');loadQuest();on('c-route');renderRoute('start');}
+async function loadQuest(){const q=await api('/projects/'+projectId+'/questionnaire');let h='';
+  q.schema.forEach(s=>{h+=`<b>${s.title}</b>`;s.questions.forEach(qq=>{
+    if(qq.type==='bool')h+=`<label style="font-weight:400"><input type=checkbox data-code="${qq.code}" style="width:auto;margin-right:7px"> ${qq.label}</label>`;
+    else h+=`<label>${qq.label}<input data-code="${qq.code}" type="number"></label>`;});});
+  document.getElementById('quest').innerHTML=h;}
+async function saveQuest(){const answers={};
+  document.querySelectorAll('#quest [data-code]').forEach(el=>{answers[el.dataset.code]=el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
+  await api('/projects/'+projectId+'/questionnaire','PUT',{answers});
+  const r=await api('/projects/'+projectId+'/matching/run','POST',{});lastResults=r.results;on('c-results');renderResults();renderRoute('matched');
+  document.getElementById('c-results').scrollIntoView({behavior:'smooth',block:'nearest'});}
+const ROUTE=['Обращение','Подбор','Документы','Проверка','Выплата'];
+function stageOf(s){return {start:0,matched:1,submitted:2,in_review:3,approved:3,paid:4}[s]??0;}
+function renderRoute(s){const cur=stageOf(s);document.getElementById('route').innerHTML='<div class="route">'+ROUTE.map((x,i)=>
+  `<div class="rstep ${i<cur?'done':''} ${i===cur?'cur':''}"><div class="rdot"></div><small>${x}</small></div>`).join('')+'</div>';}
+function renderResults(){document.getElementById('results').innerHTML=lastResults.map((m,i)=>`
+  <div class="item"><div class="row" style="justify-content:space-between"><b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
+    <div style="margin-top:6px"><span class="score">Соответствие ${m.score}%</span>${m.amount?('<span class="amount">'+rub(m.amount)+'</span>'):''}</div>
+    <div class="row" style="margin-top:11px"><button class="ghost sm" onclick="toggleWhy(${i})">Почему именно эта мера?</button><button class="sm" onclick="apply(${m.measure_id})">Подать заявку</button></div>
+    <div class="explain hidden" id="why-${i}">
+      ${m.matched.map(x=>'<div class="ok">✓ '+x.rule+'</div>').join('')}
+      ${m.unmet.map(x=>'<div class="no">✗ '+x.rule+'</div>').join('')}
+      ${m.missing.map(x=>'<div class="need">⚠ Не хватает: '+x.field+'</div>').join('')}
+      <div style="margin-top:6px"><b>Что дальше:</b> ${m.next_step||'—'}</div><div><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}</div>
+    </div></div>`).join('')||'<small>Подходящих мер не найдено.</small>';}
+function toggleWhy(i){document.getElementById('why-'+i).classList.toggle('hidden');}
+async function apply(measure_id){await api('/applications','POST',{project_id:projectId,measure_id});on('c-apps');loadApps();on('c-timeline');loadTimeline();renderRoute('submitted');}
+async function loadApps(){const a=await api('/applications');if(a.length)renderRoute(a[a.length-1].status);
+  document.getElementById('apps').innerHTML=a.map(x=>`<div class="item"><b>${x.measure_title}</b> <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span>${x.expected_amount?('<span class="amount">'+rub(x.expected_amount)+'</span>'):''}</div>`).join('')||'<small>Заявок нет.</small>';}
+async function loadNotif(){const n=await api('/notifications');
+  if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
+  on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
+  document.getElementById('notif').innerHTML=n.map(x=>`<div class="item" style="${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');}
+const hhmm=iso=>{try{const d=new Date(iso+'Z');return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}catch(e){return '';}};
+async function loadTimeline(){const t=await api('/projects/'+projectId+'/timeline');
+  document.getElementById('timeline').innerHTML=t.map((e,i)=>`<div class="tl-item"><div class="tl-time">${hhmm(e.created_at)}</div>
+    <div class="tl-rail"><div class="tl-dot"></div>${i<t.length-1?'<div class="tl-line"></div>':''}</div>
+    <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div></div>`).join('')||'<small>Событий пока нет.</small>';}
 
 /* ---- Администрирование ---- */
-async function adminLogin(){
-  const r=await api('/admin/login','POST',{}); adminToken='user-'+r.user.id;
-  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона.</small>`;
-  document.getElementById('admin-brand-card').style.display='block';
-  document.getElementById('admin-meas-card').style.display='block';
-  const cats=await api('/dictionaries/citizen_categories');
-  document.getElementById('nm-cat').innerHTML=cats.map(c=>`<option value="${c.code}">${c.title}</option>`).join('');
-  loadAdminMeasures();
-}
-async function saveBranding(){
-  await api('/branding','PUT',{region_name:document.getElementById('b-region').value,emblem:document.getElementById('b-emblem').value,
-    color_primary:document.getElementById('b-color').value,welcome:document.getElementById('b-welcome').value},adminToken);
-  applyBranding();
-}
-async function addMeasure(){
-  await api('/admin/measures','POST',{title:document.getElementById('nm-title').value,
-    amount:Number(document.getElementById('nm-amount').value)||null,category_code:document.getElementById('nm-cat').value},adminToken);
-  document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';loadAdminMeasures();
-}
-async function loadAdminMeasures(){
-  const m=await api('/admin/measures','GET',null,adminToken);
+async function adminLogin(){const r=await api('/admin/login','POST',{});adminToken='user-'+r.user.id;
+  document.getElementById('admin-info').innerHTML=`<small>Доступ администратора региона активирован.</small>`;
+  document.getElementById('admin-brand-card').style.display='block';document.getElementById('admin-meas-card').style.display='block';
+  const cats=await api('/dictionaries/citizen_categories');document.getElementById('nm-cat').innerHTML=cats.map(c=>`<option value="${c.code}">${c.title}</option>`).join('');loadAdminMeasures();}
+async function saveBranding(){await api('/branding','PUT',{region_name:document.getElementById('b-region').value,emblem:document.getElementById('b-emblem').value,
+  color_primary:document.getElementById('b-color').value,welcome:document.getElementById('b-welcome').value},adminToken);applyBranding();}
+async function addMeasure(){await api('/admin/measures','POST',{title:document.getElementById('nm-title').value,
+  amount:Number(document.getElementById('nm-amount').value)||null,category_code:document.getElementById('nm-cat').value},adminToken);
+  document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';loadAdminMeasures();}
+async function loadAdminMeasures(){const m=await api('/admin/measures','GET',null,adminToken);
   document.getElementById('admin-measures').innerHTML=`<div style="margin-bottom:8px"><b class="num">Всего мер: ${m.length}</b></div>`+
     '<table><thead><tr><th>Мера</th><th>Уровень</th><th style="text-align:right">Сумма</th></tr></thead><tbody>'+
-    m.slice(-10).reverse().map(x=>`<tr><td>${x.title}</td><td>${x.level}</td><td style="text-align:right" class="num">${x.amount?rub(x.amount):'—'}</td></tr>`).join('')+'</tbody></table>';
-}
+    m.slice(-10).reverse().map(x=>`<tr><td>${x.title}</td><td>${x.level}</td><td style="text-align:right" class="num">${x.amount?rub(x.amount):'—'}</td></tr>`).join('')+'</tbody></table>';}
 
 /* ---- Координатор ---- */
-async function coordLogin(){
-  const r=await api('/coordinator/login','POST',{}); coordToken='user-'+r.user.id;
-  STATUSES=await api('/application_statuses');
-  document.getElementById('coord-info').innerHTML=`<small>Вы вошли как ${r.user.first_name} ${r.user.last_name} (координатор).</small>`;
-  loadCoordApps();
-}
-async function loadCoordApps(){
-  const apps=await api('/coordinator/applications','GET',null,coordToken);
-  document.getElementById('coord-apps').innerHTML=apps.map(x=>
-    `<div class="item"><div class="row" style="justify-content:space-between"><b>${x.first_name} ${x.last_name}</b> <small class="num">${x.phone}</small></div>
-     <div style="margin:6px 0">${x.measure_title} <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span></div>
-     <div class="row">${STATUSES.map(s=>`<button class="ghost sm" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}</div></div>`).join('')
-    ||'<small>Заявок пока нет. Подайте заявку в разделе «Гражданин».</small>';
-}
+async function coordLogin(){const r=await api('/coordinator/login','POST',{});coordToken='user-'+r.user.id;STATUSES=await api('/application_statuses');
+  document.getElementById('coord-info').innerHTML=`<small>Оператор: ${r.user.first_name} ${r.user.last_name} · координатор.</small>`;loadCoordApps();}
+async function loadCoordApps(){const apps=await api('/coordinator/applications','GET',null,coordToken);
+  document.getElementById('coord-apps').innerHTML=apps.map(x=>`<div class="item"><div class="row" style="justify-content:space-between"><b>${x.first_name} ${x.last_name}</b> <small class="num">${x.phone}</small></div>
+    <div style="margin:7px 0">${x.measure_title} <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span></div>
+    <div class="row">${STATUSES.map(s=>`<button class="ghost sm" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}</div></div>`).join('')
+    ||'<small>Заявок пока нет. Подайте заявку в разделе «Гражданин».</small>';}
 async function setStatus(aid,status){await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken);loadCoordApps();}
 </script>
 </body>
