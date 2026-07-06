@@ -6,260 +6,206 @@
 <title>КУРАТОР — цифровое сопровождение граждан</title>
 <style>
   :root{
-    --brand:#1f3a5f; --brand-2:#16293f; --green:#355e4a; --gold:#c9a227;
-    --bg:#f5f7fa; --card:#fff; --line:#e3e8ef; --text:#1c2733; --muted:#5b6672;
-    --ok:#2e7d55; --ok-bg:#e8f3ec; --warn:#8a6a1f; --warn-bg:#f8f0d8;
-    --shadow:0 1px 2px rgba(20,35,60,.05); --shadow-md:0 6px 20px rgba(20,35,60,.08);
-    --r:16px;
+    --bg:#eef1f6; --sidebar:#0d1b2a; --sidebar-2:#132538; --side-tx:#9fb0c3; --side-hi:#e8eef6;
+    --accent:#2563eb; --accent-d:#1d4ed8; --card:#fff; --line:#e4e8ef; --line-2:#eef1f5;
+    --text:#111a27; --muted:#64748b; --ok:#0f7a4d; --ok-bg:#e7f4ee; --warn:#8a6410;
+    --warn-bg:#f7efd9; --dng:#b4342a; --dng-bg:#fbeae8;
+    --r:10px; --shadow:0 1px 2px rgba(15,27,42,.06);
   }
   *{box-sizing:border-box}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    margin:0;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
-  a{color:inherit}
+  html,body{margin:0;height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Inter",Arial,sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .num{font-variant-numeric:tabular-nums}
 
-  /* ---- Top bar ---- */
-  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:12px 24px;display:flex;
-    align-items:center;gap:12px;position:sticky;top:0;z-index:20}
-  .topbar .mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex:0 0 auto}
-  .topbar .tname{font-weight:800;letter-spacing:.3px;color:var(--brand)}
-  .topbar .treg{color:var(--muted);font-size:13px}
-  .navtabs{margin-left:auto;display:flex;gap:2px}
-  .navtabs .tab{padding:8px 14px;border-radius:9px;color:var(--muted);cursor:pointer;font-weight:600;
-    font-size:14px;transition:.15s}
-  .navtabs .tab:hover{background:var(--bg);color:var(--brand)}
-  .navtabs .tab.active{background:var(--brand);color:#fff}
+  .app{display:flex;min-height:100vh}
+  /* ---- Sidebar ---- */
+  .sidebar{width:248px;flex:0 0 auto;background:linear-gradient(180deg,var(--sidebar),var(--sidebar-2));
+    color:var(--side-tx);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:11px;padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .brand .mk{width:36px;height:36px;border-radius:9px;background:var(--accent);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;font-size:16px}
+  .brand .bt{color:var(--side-hi);font-weight:700;letter-spacing:.4px;line-height:1.1}
+  .brand .br{font-size:11.5px;color:var(--side-tx)}
+  .snav{padding:14px 12px;display:flex;flex-direction:column;gap:3px}
+  .snav .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:#61748b;padding:10px 12px 6px}
+  .navi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;
+    color:var(--side-tx);font-weight:600;font-size:13.5px;transition:.12s}
+  .navi:hover{background:rgba(255,255,255,.06);color:var(--side-hi)}
+  .navi.active{background:var(--accent);color:#fff}
+  .navi .ic{width:18px;text-align:center;opacity:.9}
+  .side-foot{margin-top:auto;padding:16px 20px;font-size:11.5px;color:#56697f;border-top:1px solid rgba(255,255,255,.07)}
+  .side-foot b{color:#8fa2b8}
 
-  /* ---- Hero ---- */
-  .hero{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;
-    padding:52px 24px 64px}
-  .hero-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;
-    gap:40px;align-items:center}
-  .hero h1{font-size:42px;line-height:1.08;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
-  .hero .promise{font-size:22px;font-weight:500;opacity:.95;margin:0 0 10px}
-  .hero .sub{font-size:16px;opacity:.82;margin:0 0 22px;max-width:520px}
-  .hero .checks{display:flex;flex-direction:column;gap:10px;margin:0 0 26px}
-  .hero .checks div{display:flex;align-items:center;gap:10px;font-size:15px}
-  .hero .checks .c{width:22px;height:22px;border-radius:50%;background:rgba(201,162,39,.22);
-    color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto}
-  .cta{background:var(--gold);color:#20160a;border:0;border-radius:12px;padding:14px 26px;
-    font-size:16px;font-weight:700;cursor:pointer;transition:.15s}
-  .cta:hover{filter:brightness(1.06)} .cta:active{transform:translateY(1px)}
-  .hero-art{width:100%;height:auto;filter:drop-shadow(0 12px 30px rgba(0,0,0,.25))}
-  .tagline{max-width:1080px;margin:26px auto 0;padding:0 24px;color:#dfe6ef;font-size:16px;
-    font-style:italic;opacity:.9}
+  /* ---- Content ---- */
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .pagebar{background:#fff;border-bottom:1px solid var(--line);padding:15px 28px;display:flex;
+    align-items:center;gap:14px;position:sticky;top:0;z-index:10}
+  .pagebar .ptitle{font-size:16px;font-weight:700}
+  .pagebar .psub{color:var(--muted);font-size:12.5px}
+  .pagebar .spacer{margin-left:auto}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 9px;border-radius:6px;
+    background:#eef2f8;color:var(--accent-d);text-transform:uppercase}
+  main{padding:24px 28px 60px;max-width:1120px;width:100%}
 
-  /* ---- Stat band ---- */
-  .stats{max-width:1080px;margin:-34px auto 0;padding:0 24px;position:relative;z-index:5}
-  .stats-in{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);
-    display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
-  .stat{padding:20px 18px;text-align:center;border-right:1px solid var(--line)}
-  .stat:last-child{border-right:0}
-  .stat .n{font-size:30px;font-weight:800;color:var(--brand);line-height:1.1}
-  .stat .n .g{color:var(--gold)}
-  .stat small{color:var(--muted);display:block;margin-top:4px;font-size:12.5px}
-  .stat-note{max-width:1080px;margin:8px auto 0;padding:0 24px;color:var(--muted);font-size:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
+    margin-bottom:16px;box-shadow:var(--shadow)}
+  .card h2{font-size:13px;margin:0 0 14px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#334155}
+  .card .desc{color:var(--muted);font-size:12.5px;margin:-8px 0 14px}
 
-  main{padding:26px 24px 70px;max-width:1080px;margin:0 auto}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
-    padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
-  h2{font-size:17px;margin:0 0 15px;font-weight:700}
-  button{background:var(--brand);color:#fff;border:0;border-radius:11px;padding:11px 20px;
-    cursor:pointer;font-size:14px;font-weight:600;transition:.15s}
-  button:hover{filter:brightness(1.1)} button:active{transform:translateY(1px)}
-  button.ghost{background:#eef2f7;color:var(--brand)} button.ghost:hover{background:#e3e9f1}
-  button.sm{padding:8px 13px;font-size:13px}
-  input,select{padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:14px;
-    width:100%;margin:5px 0;background:#fff;transition:.15s;color:var(--text)}
-  input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,58,95,.12)}
-  label{font-size:14px;display:block;margin:8px 0;font-weight:500}
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;cursor:pointer;
+    font-size:13.5px;font-weight:600;transition:.12s}
+  button:hover{background:var(--accent-d)} button:active{transform:translateY(1px)}
+  button.ghost{background:#fff;color:var(--accent-d);border:1px solid var(--line)}
+  button.ghost:hover{background:#f3f6fb;border-color:#d3dbe6}
+  button.sm{padding:7px 12px;font-size:12.5px}
+  input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;width:100%;
+    margin:5px 0;background:#fff;color:var(--text);transition:.12s}
+  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
+  label{font-size:13px;display:block;margin:9px 0;font-weight:500;color:#33415a}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   small{color:var(--muted)}
 
-  /* route stepper (вау №1) */
-  .route{display:flex;align-items:flex-start;margin:6px 0 2px}
-  .route .rstep{flex:1;text-align:center;position:relative}
-  .route .rstep .rdot{width:18px;height:18px;border-radius:50%;background:#dfe4ec;margin:0 auto 8px;
-    border:3px solid #dfe4ec;transition:.3s}
-  .route .rstep.done .rdot{background:var(--green);border-color:var(--green)}
-  .route .rstep.cur .rdot{background:var(--gold);border-color:var(--gold);
-    box-shadow:0 0 0 5px rgba(201,162,39,.2)}
-  .route .rstep small{font-size:12px;color:var(--muted)}
-  .route .rstep.done small,.route .rstep.cur small{color:var(--text);font-weight:600}
-  .route .rstep:not(:last-child):after{content:"";position:absolute;top:8px;left:50%;width:100%;
-    height:3px;background:#dfe4ec;z-index:-0}
-  .route .rstep.done:not(:last-child):after{background:var(--green)}
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+  .kpi .k-l{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .kpi .k-n{font-size:28px;font-weight:800;color:var(--text);margin-top:6px;letter-spacing:-.5px}
+  .kpi .k-n.ac{color:var(--accent)}
+  .kpi .k-d{font-size:11.5px;color:var(--ok);margin-top:3px}
 
-  .measure{border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin:11px 0;background:#fff;transition:.15s}
-  .measure:hover{box-shadow:var(--shadow-md)}
-  .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
-  .eligible{background:var(--ok-bg);color:var(--ok)}
-  .conditional{background:var(--warn-bg);color:var(--warn)}
+  /* route stepper */
+  .route{display:flex;align-items:flex-start}
+  .rstep{flex:1;text-align:center;position:relative}
+  .rstep .rdot{width:14px;height:14px;border-radius:50%;background:#cfd8e6;margin:0 auto 8px;
+    outline:3px solid #eef1f6;transition:.25s}
+  .rstep.done .rdot{background:var(--accent)} .rstep.cur .rdot{background:var(--accent);outline-color:rgba(37,99,235,.25)}
+  .rstep small{font-size:11.5px;color:var(--muted)} .rstep.done small,.rstep.cur small{color:var(--text);font-weight:600}
+  .rstep:not(:last-child):before{content:"";position:absolute;top:6px;left:50%;width:100%;height:2px;background:#dbe2ec}
+  .rstep.done:not(:last-child):before{background:var(--accent)}
+
+  /* lists / tables */
+  .item{border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin:9px 0;background:#fff}
+  .item:hover{border-color:#d7dfea}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+    letter-spacing:.5px;padding:9px 10px;border-bottom:1px solid var(--line)}
+  td{padding:11px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600}
+  .eligible{background:var(--ok-bg);color:var(--ok)} .conditional{background:var(--warn-bg);color:var(--warn)}
   .need_info{background:#eef1f5;color:var(--muted)}
-  .st-submitted{background:#e7edf5;color:var(--brand)}.st-in_review{background:var(--warn-bg);color:var(--warn)}
-  .st-approved{background:var(--ok-bg);color:var(--ok)}.st-paid{background:#e3f2e9;color:#1c6b42}
-  .st-rejected{background:#fbe9e9;color:#a5342c}
-  .score{font-weight:700;color:var(--brand)} .amount{font-weight:700;color:var(--green);margin-left:6px}
-  .explain{font-size:13.5px;margin-top:10px;background:#f7f9fb;border:1px solid var(--line);
-    border-radius:12px;padding:13px 15px;line-height:1.7}
-  .explain .ok{color:var(--ok)} .explain .no{color:#a5342c} .explain .need{color:var(--warn)}
+  .st-submitted{background:#e6edfa;color:var(--accent-d)}.st-in_review{background:var(--warn-bg);color:var(--warn)}
+  .st-approved{background:var(--ok-bg);color:var(--ok)}.st-paid{background:#dcefe6;color:#0c5f3c}
+  .st-rejected{background:var(--dng-bg);color:var(--dng)}
+  .score{font-weight:700;color:var(--accent)} .amount{font-weight:700;color:var(--text);margin-left:8px}
+  .explain{font-size:13px;margin-top:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+  .explain .ok{color:var(--ok)} .explain .no{color:var(--dng)} .explain .need{color:var(--warn)}
   .hidden{display:none}
-  .step{opacity:.5;pointer-events:none;transition:opacity .3s} .step.on{opacity:1;pointer-events:auto}
+  .step{opacity:.45;pointer-events:none;transition:opacity .25s} .step.on{opacity:1;pointer-events:auto}
   ol{margin:6px 0 0;padding-left:20px} li{margin:3px 0}
 
-  /* timeline (вау №4) */
-  .tl-item{display:flex;gap:14px;align-items:stretch}
-  .tl-time{flex:0 0 44px;text-align:right;color:var(--muted);font-size:12px;padding-top:2px;font-variant-numeric:tabular-nums}
+  /* timeline */
+  .tl-item{display:flex;gap:13px}
+  .tl-time{flex:0 0 42px;text-align:right;color:var(--muted);font-size:12px;padding-top:1px}
   .tl-rail{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
-  .tl-dot{width:12px;height:12px;border-radius:50%;background:var(--green);margin-top:5px;
-    box-shadow:0 0 0 4px rgba(53,94,74,.14)}
+  .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:5px;outline:3px solid #eaf0fb}
   .tl-line{width:2px;flex:1;background:var(--line);margin:3px 0}
-  .tl-body{padding-bottom:16px}
+  .tl-body{padding-bottom:15px}
 
-  @media(max-width:820px){
-    .hero-in{grid-template-columns:1fr} .hero-art{max-width:360px;margin:0 auto}
-    .stats-in{grid-template-columns:repeat(2,1fr)} .stat:nth-child(2){border-right:0}
-    .hero h1{font-size:34px} .navtabs{display:none}
-    .mobtabs{display:flex!important}
+  @media(max-width:860px){
+    .app{flex-direction:column} .sidebar{width:100%;height:auto;position:static;flex-direction:row;
+      align-items:center;overflow-x:auto} .brand{border:0;padding:12px 16px}
+    .snav{flex-direction:row;padding:8px} .snav .lbl{display:none} .side-foot{display:none}
+    .kpis{grid-template-columns:repeat(2,1fr)}
   }
-  .mobtabs{display:none;gap:6px;flex-wrap:wrap;margin:0 auto 4px;max-width:1080px;padding:12px 24px 0}
-  .mobtabs .tab{padding:8px 12px;border-radius:9px;background:#fff;border:1px solid var(--line);
-    font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
-  .mobtabs .tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 </style>
 </head>
 <body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="mk" id="emblem">🛡️</div>
+      <div><div class="bt" id="sysname">КУРАТОР</div><div class="br" id="regionname">Краснодарский край</div></div></div>
+    <nav class="snav">
+      <div class="lbl">Разделы</div>
+      <div class="navi active" data-tab="citizen" onclick="switchTab('citizen')"><span class="ic">◱</span> Гражданин</div>
+      <div class="navi" data-tab="coordinator" onclick="switchTab('coordinator')"><span class="ic">◨</span> Координатор</div>
+      <div class="navi" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="ic">▤</span> Аналитика</div>
+      <div class="navi" data-tab="admin" onclick="switchTab('admin')"><span class="ic">⚙</span> Администрирование</div>
+    </nav>
+    <div class="side-foot">Демонстрационная среда<br><b>КУРАТОР</b> · MVP v1.2</div>
+  </aside>
 
-<div class="topbar">
-  <div class="mark" id="emblem">🛡️</div>
-  <div><span class="tname" id="sysname">КУРАТОР</span> <span class="treg" id="regionname">· Краснодарский край</span></div>
-  <div class="navtabs">
-    <div class="tab active" data-tab="citizen" onclick="switchTab('citizen')">Гражданин</div>
-    <div class="tab" data-tab="coordinator" onclick="switchTab('coordinator')">Координатор</div>
-    <div class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Руководитель</div>
-    <div class="tab" data-tab="admin" onclick="switchTab('admin')">Администратор</div>
-  </div>
-</div>
-<div class="mobtabs">
-  <div class="tab active" data-tab="citizen" onclick="switchTab('citizen')">Гражданин</div>
-  <div class="tab" data-tab="coordinator" onclick="switchTab('coordinator')">Координатор</div>
-  <div class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Руководитель</div>
-  <div class="tab" data-tab="admin" onclick="switchTab('admin')">Администратор</div>
-</div>
-
-<!-- HERO (виден на вкладке Гражданин) -->
-<section id="hero">
-  <div class="hero">
-    <div class="hero-in">
-      <div>
-        <h1 id="hero-title">КУРАТОР</h1>
-        <p class="promise" id="hero-promise">Цифровое сопровождение граждан — от обращения до получения помощи</p>
-        <p class="sub">Для участников СВО, членов их семей и других категорий граждан, нуждающихся в государственной поддержке.</p>
-        <div class="checks">
-          <div><span class="c">✓</span> Подбор мер поддержки автоматически</div>
-          <div><span class="c">✓</span> Объяснение каждого решения</div>
-          <div><span class="c">✓</span> Полный маршрут сопровождения человека</div>
-        </div>
-        <button class="cta" onclick="document.getElementById('c-login').scrollIntoView({behavior:'smooth'})">Начать демонстрацию</button>
-      </div>
-      <div>
-        <svg class="hero-art" viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#2a4a72"/><stop offset="1" stop-color="#1b3151"/>
-            </linearGradient>
-          </defs>
-          <rect x="20" y="30" width="420" height="300" rx="22" fill="url(#g1)" opacity=".55"/>
-          <!-- маршрут сопровождения -->
-          <path d="M60 250 C 140 250, 150 130, 230 130 S 330 210, 400 120" fill="none"
-                stroke="#c9a227" stroke-width="3.5" stroke-dasharray="2 10" stroke-linecap="round" opacity=".9"/>
-          <g fill="#c9a227">
-            <circle cx="60" cy="250" r="8"/><circle cx="230" cy="130" r="8"/><circle cx="400" cy="120" r="8"/>
-          </g>
-          <!-- человек -->
-          <circle cx="130" cy="205" r="26" fill="#e9eef5"/>
-          <circle cx="130" cy="196" r="10" fill="#2a4a72"/>
-          <path d="M112 222 c0 -12 36 -12 36 0 z" fill="#2a4a72"/>
-          <!-- координатор + документ->галочка -->
-          <rect x="300" y="180" width="96" height="70" rx="12" fill="#e9eef5"/>
-          <rect x="315" y="196" width="46" height="7" rx="3.5" fill="#9fb0c6"/>
-          <rect x="315" y="212" width="66" height="7" rx="3.5" fill="#c3cede"/>
-          <circle cx="372" cy="232" r="15" fill="#2e7d55"/>
-          <path d="M365 232 l5 5 l9 -11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- региональная дуга -->
-          <path d="M40 300 Q 230 340 420 300" fill="none" stroke="#3a5678" stroke-width="2" opacity=".6"/>
-        </svg>
-      </div>
+  <div class="content">
+    <div class="pagebar">
+      <div><div class="ptitle" id="ptitle">Личный кабинет гражданина</div>
+        <div class="psub" id="psub">Подбор и оформление мер государственной поддержки</div></div>
+      <div class="spacer"></div><div class="chip">demo</div>
     </div>
+
+    <main id="citizen">
+      <div class="card" id="c-login"><h2>Идентификация</h2>
+        <div class="desc">Вход по номеру телефона (демонстрационный код — 1234).</div>
+        <div class="row"><input id="phone" placeholder="+7 918 000 00 00" value="+79181112233" style="max-width:260px">
+          <button onclick="login()">Получить код и войти</button></div>
+        <small id="otp-hint"></small></div>
+
+      <div class="card step hidden" id="c-notif"><h2>Уведомления</h2><div id="notif"></div></div>
+
+      <div class="card step" id="c-cats"><h2>Категории гражданина</h2>
+        <div class="desc">Определяют доступные меры поддержки.</div><div id="cats"></div>
+        <div style="height:10px"></div><button onclick="saveCats()">Сохранить</button></div>
+
+      <div class="card step" id="c-case"><h2>Жизненная ситуация</h2>
+        <select id="life_event"></select><div style="height:10px"></div><button onclick="createCase()">Создать кейс</button></div>
+
+      <div class="card step" id="c-quest"><h2>Анкета</h2><div id="quest"></div>
+        <div style="height:10px"></div><button onclick="saveQuest()">Подобрать меры поддержки</button></div>
+
+      <div class="card step" id="c-route"><h2>Маршрут сопровождения</h2><div id="route"></div></div>
+
+      <div class="card step" id="c-results"><h2>Рекомендованные меры</h2><div id="results"></div></div>
+
+      <div class="card step" id="c-apps"><h2>Мои заявки</h2><div id="apps"></div></div>
+
+      <div class="card step" id="c-timeline"><h2>История сопровождения</h2>
+        <div id="timeline" style="margin-top:6px"></div></div>
+    </main>
+
+    <main id="dashboard" class="hidden">
+      <div class="kpis" id="kpi"></div>
+      <div class="card"><h2>Заявки по статусам</h2><div id="dash-status"></div></div>
+      <div class="card"><h2>Наиболее востребованные меры</h2><div id="dash-top"></div>
+        <div style="height:12px"></div><button class="ghost sm" onclick="loadDash()">Обновить</button></div>
+    </main>
+
+    <main id="admin" class="hidden">
+      <div class="card"><h2>Доступ администратора</h2>
+        <button onclick="adminLogin()">Войти как администратор региона</button>
+        <div id="admin-info" style="margin-top:8px"></div></div>
+      <div class="card" id="admin-brand-card" style="display:none"><h2>Брендирование региона · White Label</h2>
+        <div class="desc">Настройка внешнего вида под регион без изменения кода.</div>
+        <div class="row"><div style="flex:1;min-width:220px"><label>Название региона<input id="b-region" value="Краснодарский край"></label></div>
+          <div style="flex:1;min-width:220px"><label>Символ (эмодзи)<input id="b-emblem" value="🛡️"></label></div></div>
+        <div class="row"><div style="flex:1;min-width:220px"><label>Основной цвет (hex)<input id="b-color" value="#2563eb"></label></div>
+          <div style="flex:2;min-width:260px"><label>Приветствие<input id="b-welcome" value="Цифровое сопровождение участников СВО и членов их семей"></label></div></div>
+        <div style="height:6px"></div><button onclick="saveBranding()">Применить</button></div>
+      <div class="card" id="admin-meas-card" style="display:none"><h2>Реестр мер поддержки</h2>
+        <div class="desc">Добавление меры без участия разработчиков.</div>
+        <div class="row"><div style="flex:2;min-width:240px"><label>Название<input id="nm-title" placeholder="Единовременная выплата"></label></div>
+          <div style="flex:1;min-width:150px"><label>Сумма, ₽<input id="nm-amount" type="number" placeholder="100000"></label></div>
+          <div style="flex:1;min-width:200px"><label>Категория<select id="nm-cat"></select></label></div></div>
+        <div style="height:6px"></div><button onclick="addMeasure()">Добавить меру</button>
+        <div id="admin-measures" style="margin-top:16px"></div></div>
+    </main>
+
+    <main id="coordinator" class="hidden">
+      <div class="card"><h2>Рабочее место координатора</h2>
+        <button onclick="coordLogin()">Войти как координатор</button>
+        <div id="coord-info" style="margin-top:8px"></div></div>
+      <div class="card"><h2>Заявки подопечных</h2><div id="coord-apps"><small>Войдите, чтобы увидеть заявки.</small></div></div>
+    </main>
   </div>
-  <div class="tagline">«Ни один человек не должен остаться один на пути получения государственной помощи.»</div>
-  <div class="stats"><div class="stats-in" id="statband"></div></div>
-  <div class="stat-note" id="statnote">Демонстрационные показатели сопровождения.</div>
-</section>
-
-<main id="citizen">
-  <div class="card" id="c-login">
-    <h2>Вход по номеру телефона</h2>
-    <div class="row"><input id="phone" placeholder="+7 918 000 00 00" value="+79181112233" style="max-width:260px">
-      <button onclick="login()">Получить код и войти</button></div>
-    <small id="otp-hint"></small>
-  </div>
-
-  <div class="card step hidden" id="c-notif"><h2>Уведомления</h2><div id="notif"></div></div>
-
-  <div class="card step" id="c-cats"><h2>Ваши категории</h2><div id="cats"></div>
-    <div style="height:8px"></div><button onclick="saveCats()">Сохранить категории</button></div>
-
-  <div class="card step" id="c-case"><h2>Создать кейс — жизненная ситуация</h2>
-    <select id="life_event"></select><div style="height:8px"></div><button onclick="createCase()">Создать кейс</button></div>
-
-  <div class="card step" id="c-quest"><h2>Анкета</h2><div id="quest"></div>
-    <div style="height:8px"></div><button onclick="saveQuest()">Подобрать меры поддержки</button></div>
-
-  <div class="card step" id="c-route"><h2>Маршрут сопровождения</h2><div id="route"></div></div>
-
-  <div class="card step" id="c-results"><h2>Что вам положено</h2><div id="results"></div></div>
-
-  <div class="card step" id="c-apps"><h2>Мои заявки</h2><div id="apps"></div></div>
-
-  <div class="card step" id="c-timeline"><h2>История сопровождения</h2>
-    <small>Хронология вашего кейса — обновляется автоматически.</small>
-    <div id="timeline" style="margin-top:14px"></div></div>
-</main>
-
-<main id="dashboard" class="hidden">
-  <div class="card"><h2>Панель руководителя</h2>
-    <small>Сводка по региону в реальном времени.</small>
-    <div id="dash" style="margin-top:14px"></div>
-    <div style="height:12px"></div><button class="ghost" onclick="loadDash()">Обновить</button></div>
-</main>
-
-<main id="admin" class="hidden">
-  <div class="card"><h2>Панель администратора региона</h2>
-    <button onclick="adminLogin()">Войти как администратор</button>
-    <div id="admin-info" style="margin-top:8px"></div></div>
-  <div class="card" id="admin-brand-card" style="display:none"><h2>Брендирование региона (White Label)</h2>
-    <label>Название региона<input id="b-region" value="Краснодарский край"></label>
-    <label>Символ / герб (эмодзи)<input id="b-emblem" value="🛡️"></label>
-    <label>Основной цвет (hex)<input id="b-color" value="#1f3a5f"></label>
-    <label>Приветствие<input id="b-welcome" value="Цифровое сопровождение участников СВО и членов их семей"></label>
-    <div style="height:8px"></div><button onclick="saveBranding()">Применить брендирование</button>
-    <div style="margin-top:8px"><small>Вид системы меняется мгновенно — без разработчиков.</small></div></div>
-  <div class="card" id="admin-meas-card" style="display:none"><h2>Меры поддержки региона</h2>
-    <b>Добавить меру без кода:</b>
-    <label>Название<input id="nm-title" placeholder="Напр. Единовременная выплата"></label>
-    <div class="row"><input id="nm-amount" type="number" placeholder="Сумма, ₽" style="max-width:180px">
-      <select id="nm-cat" style="max-width:300px"></select></div>
-    <div style="height:8px"></div><button onclick="addMeasure()">Добавить меру</button>
-    <div id="admin-measures" style="margin-top:14px"></div></div>
-</main>
-
-<main id="coordinator" class="hidden">
-  <div class="card"><h2>Кабинет координатора</h2>
-    <button onclick="coordLogin()">Войти как координатор</button>
-    <div id="coord-info" style="margin-top:8px"></div></div>
-  <div class="card"><h2>Заявки подопечных</h2><div id="coord-apps"><small>Войдите, чтобы увидеть заявки.</small></div></div>
-</main>
+</div>
 
 <script>
 let token=null, coordToken=null, adminToken=null, projectId=null, lastResults=[], STATUSES=[];
@@ -271,12 +217,17 @@ const rub=v=>(v||0).toLocaleString('ru')+' ₽';
 const CAT_RU={eligible:'Положено',conditional:'Скорее всего положено',need_info:'Нужны данные'};
 const STATUS_RU={submitted:'Подана',in_review:'На проверке',approved:'Одобрена',paid:'Выплачена',rejected:'Отказано'};
 const TABS=['citizen','coordinator','dashboard','admin'];
+const TITLES={citizen:['Личный кабинет гражданина','Подбор и оформление мер государственной поддержки'],
+  coordinator:['Рабочее место координатора','Сопровождение подопечных граждан'],
+  dashboard:['Аналитика региона','Ключевые показатели сопровождения'],
+  admin:['Администрирование','Управление мерами поддержки и брендированием']};
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
+  document.querySelectorAll('.navi').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
   TABS.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==t));
-  document.getElementById('hero').classList.toggle('hidden',t!=='citizen');
-  if(t==='dashboard') loadDash();
+  document.getElementById('ptitle').textContent=TITLES[t][0];
+  document.getElementById('psub').textContent=TITLES[t][1];
+  if(t==='dashboard'){loadStats();loadDash();}
   if(t==='citizen' && token) loadNotif();
 }
 
@@ -284,23 +235,21 @@ async function applyBranding(){
   const b=await api('/branding');
   document.getElementById('sysname').textContent=b.system_name;
   document.getElementById('emblem').textContent=b.emblem;
-  document.getElementById('regionname').textContent='· '+b.region_name;
-  document.getElementById('hero-title').textContent=b.system_name;
-  document.getElementById('hero-promise').textContent=b.welcome && b.welcome.length>10
-     ? 'Цифровое сопровождение граждан — от обращения до получения помощи' : b.welcome;
-  document.documentElement.style.setProperty('--brand',b.color_primary);
+  document.getElementById('regionname').textContent=b.region_name;
+  document.documentElement.style.setProperty('--accent',b.color_primary);
   document.title=b.system_name+' — '+b.region_name;
 }
 async function loadStats(){
   const d=await api('/dashboard/summary').catch(()=>({}));
   const helped=127+(d.completed||0), cases=18+(d.new_cases||0), apps=42+(d.active_applications||0);
-  document.getElementById('statband').innerHTML=
-    `<div class="stat"><div class="n">${helped}</div><small>гражданам помогли</small></div>
-     <div class="stat"><div class="n">${cases}</div><small>новых кейсов</small></div>
-     <div class="stat"><div class="n"><span class="g">94%</span></div><small>мер подобрано автоматически</small></div>
-     <div class="stat"><div class="n">${apps}</div><small>заявок на рассмотрении</small></div>`;
+  const t=(l,n,cls='',d2='')=>`<div class="kpi"><div class="k-l">${l}</div><div class="k-n ${cls} num">${n}</div>${d2?`<div class="k-d">${d2}</div>`:''}</div>`;
+  document.getElementById('kpi').innerHTML=
+    t('Гражданам помогли',helped,'ac','сопровождение ведётся')+
+    t('Новых кейсов',cases,'','за период')+
+    t('Подобрано автоматически','94%','ac','Rule Engine')+
+    t('Заявок на рассмотрении',apps,'','в работе координаторов');
 }
-applyBranding(); loadStats();
+applyBranding();
 
 /* ---- Гражданин ---- */
 async function login(){
@@ -308,14 +257,13 @@ async function login(){
   const r=await api('/auth/otp/request','POST',{phone});
   document.getElementById('otp-hint').textContent=r.message;
   const v=await api('/auth/otp/verify','POST',{phone,code:'1234',first_name:'Иван',last_name:'Петров'});
-  token='user-'+v.user.id;
-  on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
-  document.getElementById('c-cats').scrollIntoView({behavior:'smooth'});
+  token='user-'+v.user.id; on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
+  document.getElementById('c-cats').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 async function loadCats(){
   const cats=await api('/dictionaries/citizen_categories');
   document.getElementById('cats').innerHTML=cats.map(c=>
-    `<label><input type=checkbox value="${c.code}"> ${c.title} <small>(${c.level})</small></label>`).join('');
+    `<label style="font-weight:400"><input type=checkbox value="${c.code}" style="width:auto;margin-right:6px"> ${c.title} <small>(${c.level})</small></label>`).join('');
 }
 async function saveCats(){
   const sel=[...document.querySelectorAll('#cats input:checked')].map(i=>i.value);
@@ -326,51 +274,41 @@ async function loadLifeEvents(){
   document.getElementById('life_event').innerHTML=le.map(e=>`<option value="${e.code}">${e.title}</option>`).join('');
 }
 async function createCase(){
-  const life_event=document.getElementById('life_event').value;
-  const p=await api('/projects','POST',{life_event});
+  const p=await api('/projects','POST',{life_event:document.getElementById('life_event').value});
   projectId=p.id; on('c-quest'); loadQuest(); on('c-route'); renderRoute('start');
 }
 async function loadQuest(){
   const q=await api('/projects/'+projectId+'/questionnaire'); let html='';
   q.schema.forEach(s=>{html+=`<b>${s.title}</b>`;s.questions.forEach(qq=>{
-    if(qq.type==='bool') html+=`<label><input type=checkbox data-code="${qq.code}"> ${qq.label}</label>`;
+    if(qq.type==='bool') html+=`<label style="font-weight:400"><input type=checkbox data-code="${qq.code}" style="width:auto;margin-right:6px"> ${qq.label}</label>`;
     else html+=`<label>${qq.label}<input data-code="${qq.code}" type="number"></label>`;});});
   document.getElementById('quest').innerHTML=html;
 }
 async function saveQuest(){
   const answers={};
-  document.querySelectorAll('#quest [data-code]').forEach(el=>{
-    answers[el.dataset.code]= el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
+  document.querySelectorAll('#quest [data-code]').forEach(el=>{answers[el.dataset.code]=el.type==='checkbox'?el.checked:(el.value?Number(el.value):null);});
   await api('/projects/'+projectId+'/questionnaire','PUT',{answers});
   const r=await api('/projects/'+projectId+'/matching/run','POST',{});
   lastResults=r.results; on('c-results'); renderResults(); renderRoute('matched');
-  document.getElementById('c-results').scrollIntoView({behavior:'smooth'});
+  document.getElementById('c-results').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 const ROUTE=['Обращение','Подбор','Документы','Проверка','Выплата'];
-function stageOf(status){return {start:0,matched:1,submitted:2,in_review:3,approved:3,paid:4}[status]??0;}
-function renderRoute(status){
-  const cur=stageOf(status);
-  document.getElementById('route').innerHTML='<div class="route">'+ROUTE.map((s,i)=>
-    `<div class="rstep ${i<cur?'done':''} ${i===cur?'cur':''}"><div class="rdot"></div><small>${s}</small></div>`).join('')+'</div>';
-}
+function stageOf(s){return {start:0,matched:1,submitted:2,in_review:3,approved:3,paid:4}[s]??0;}
+function renderRoute(s){const cur=stageOf(s);
+  document.getElementById('route').innerHTML='<div class="route">'+ROUTE.map((x,i)=>
+    `<div class="rstep ${i<cur?'done':''} ${i===cur?'cur':''}"><div class="rdot"></div><small>${x}</small></div>`).join('')+'</div>';}
 function renderResults(){
   document.getElementById('results').innerHTML=lastResults.map((m,i)=>`
-    <div class="measure">
-      <div class="row" style="justify-content:space-between">
-        <b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
-      <div style="margin-top:4px"><span class="score">Соответствие ${m.score}%</span>${m.amount?('<span class="amount">'+rub(m.amount)+'</span>'):''}</div>
-      <div class="row" style="margin-top:10px">
-        <button class="ghost sm" onclick="toggleWhy(${i})">Почему именно эта мера?</button>
-        <button class="sm" onclick="apply(${m.measure_id})">Подать заявку</button>
-      </div>
+    <div class="item">
+      <div class="row" style="justify-content:space-between"><b>${m.title}</b><span class="badge ${m.category}">${CAT_RU[m.category]||m.category}</span></div>
+      <div style="margin-top:5px"><span class="score num">Соответствие ${m.score}%</span>${m.amount?('<span class="amount num">'+rub(m.amount)+'</span>'):''}</div>
+      <div class="row" style="margin-top:10px"><button class="ghost sm" onclick="toggleWhy(${i})">Почему именно эта мера?</button><button class="sm" onclick="apply(${m.measure_id})">Подать заявку</button></div>
       <div class="explain hidden" id="why-${i}">
-        ${m.matched.map(x=>'<div class="ok">✓ '+x.rule+'</div>').join('')||''}
+        ${m.matched.map(x=>'<div class="ok">✓ '+x.rule+'</div>').join('')}
         ${m.unmet.map(x=>'<div class="no">✗ '+x.rule+'</div>').join('')}
         ${m.missing.map(x=>'<div class="need">⚠ Не хватает: '+x.field+'</div>').join('')}
-        <div style="margin-top:6px"><b>Что дальше:</b> ${m.next_step||'—'}</div>
-        <div><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}</div>
-      </div>
-    </div>`).join('')||'<small>Подходящих мер не найдено.</small>';
+        <div style="margin-top:6px"><b>Что дальше:</b> ${m.next_step||'—'}</div><div><b>Документы:</b> ${(m.required_documents||[]).join(', ')||'—'}</div>
+      </div></div>`).join('')||'<small>Подходящих мер не найдено.</small>';
 }
 function toggleWhy(i){document.getElementById('why-'+i).classList.toggle('hidden');}
 async function apply(measure_id){
@@ -378,45 +316,40 @@ async function apply(measure_id){
   on('c-apps'); loadApps(); on('c-timeline'); loadTimeline(); renderRoute('submitted');
 }
 async function loadApps(){
-  const a=await api('/applications');
-  if(a.length) renderRoute(a[a.length-1].status);
+  const a=await api('/applications'); if(a.length) renderRoute(a[a.length-1].status);
   document.getElementById('apps').innerHTML=a.map(x=>
-    `<div class="measure"><b>${x.measure_title}</b> <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span>
-     ${x.expected_amount?('<span class="amount">'+rub(x.expected_amount)+'</span>'):''}</div>`).join('')||'<small>Заявок нет.</small>';
+    `<div class="item"><b>${x.measure_title}</b> <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span>${x.expected_amount?('<span class="amount num">'+rub(x.expected_amount)+'</span>'):''}</div>`).join('')||'<small>Заявок нет.</small>';
 }
 async function loadNotif(){
   const n=await api('/notifications');
   if(!n.length){document.getElementById('c-notif').classList.add('hidden');return;}
   on('c-notif');document.getElementById('c-notif').classList.remove('hidden');
-  document.getElementById('notif').innerHTML=n.map(x=>
-    `<div class="measure" style="padding:11px 13px;${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
+  document.getElementById('notif').innerHTML=n.map(x=>`<div class="item" style="${x.is_read?'opacity:.6':''}">${x.text}</div>`).join('');
 }
 const hhmm=iso=>{try{const d=new Date(iso+'Z');return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}catch(e){return '';}};
 async function loadTimeline(){
   const t=await api('/projects/'+projectId+'/timeline');
   document.getElementById('timeline').innerHTML=t.map((e,i)=>
-    `<div class="tl-item">
-       <div class="tl-time">${hhmm(e.created_at)}</div>
+    `<div class="tl-item"><div class="tl-time num">${hhmm(e.created_at)}</div>
        <div class="tl-rail"><div class="tl-dot"></div>${i<t.length-1?'<div class="tl-line"></div>':''}</div>
-       <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div>
-     </div>`).join('')||'<small>Событий пока нет.</small>';
+       <div class="tl-body"><b>${e.event}</b><br><small>${e.actor}${e.status?(' · '+(STATUS_RU[e.status]||e.status)):''}</small></div></div>`).join('')||'<small>Событий пока нет.</small>';
 }
 
-/* ---- Дашборд ---- */
+/* ---- Аналитика ---- */
 async function loadDash(){
   const d=await api('/dashboard/summary');
-  const stat=(t,v)=>`<div class="measure" style="text-align:center;flex:1;min-width:140px"><div style="font-size:26px;font-weight:800;color:var(--brand)">${v}</div><small>${t}</small></div>`;
-  document.getElementById('dash').innerHTML=
-    `<div class="row">${stat('Кейсов',d.new_cases)}${stat('Активных заявок',d.active_applications)}
-       ${stat('Выплачено',d.completed)}${stat('Сумма',rub(d.total_paid))}</div>
-     <div style="margin-top:16px"><b>Заявки по статусам:</b> ${Object.entries(d.by_status).map(([k,v])=>(STATUS_RU[k]||k)+': '+v).join(' · ')}</div>
-     <div style="margin-top:12px"><b>Топ-5 востребованных мер:</b><ol>${d.top_measures.map(m=>`<li>${m.title} — ${m.count}</li>`).join('')||'<li>—</li>'}</ol></div>`;
+  document.getElementById('dash-status').innerHTML=`<div class="row">${Object.entries(d.by_status).map(([k,v])=>
+    `<span class="badge st-${k}" style="font-size:12.5px">${STATUS_RU[k]||k}: <span class="num">${v}</span></span>`).join('')}</div>`;
+  document.getElementById('dash-top').innerHTML=d.top_measures.length
+    ? '<table><thead><tr><th>Мера поддержки</th><th style="text-align:right">Заявок</th></tr></thead><tbody>'+
+      d.top_measures.map(m=>`<tr><td>${m.title}</td><td style="text-align:right" class="num">${m.count}</td></tr>`).join('')+'</tbody></table>'
+    : '<small>Пока нет данных.</small>';
 }
 
-/* ---- Администратор ---- */
+/* ---- Администрирование ---- */
 async function adminLogin(){
   const r=await api('/admin/login','POST',{}); adminToken='user-'+r.user.id;
-  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона</small>`;
+  document.getElementById('admin-info').innerHTML=`<small>Вы вошли как администратор региона.</small>`;
   document.getElementById('admin-brand-card').style.display='block';
   document.getElementById('admin-meas-card').style.display='block';
   const cats=await api('/dictionaries/citizen_categories');
@@ -424,41 +357,38 @@ async function adminLogin(){
   loadAdminMeasures();
 }
 async function saveBranding(){
-  await api('/branding','PUT',{region_name:document.getElementById('b-region').value,
-    emblem:document.getElementById('b-emblem').value,color_primary:document.getElementById('b-color').value,
-    welcome:document.getElementById('b-welcome').value},adminToken);
+  await api('/branding','PUT',{region_name:document.getElementById('b-region').value,emblem:document.getElementById('b-emblem').value,
+    color_primary:document.getElementById('b-color').value,welcome:document.getElementById('b-welcome').value},adminToken);
   applyBranding();
 }
 async function addMeasure(){
   await api('/admin/measures','POST',{title:document.getElementById('nm-title').value,
-    amount:Number(document.getElementById('nm-amount').value)||null,
-    category_code:document.getElementById('nm-cat').value},adminToken);
+    amount:Number(document.getElementById('nm-amount').value)||null,category_code:document.getElementById('nm-cat').value},adminToken);
   document.getElementById('nm-title').value='';document.getElementById('nm-amount').value='';loadAdminMeasures();
 }
 async function loadAdminMeasures(){
   const m=await api('/admin/measures','GET',null,adminToken);
-  document.getElementById('admin-measures').innerHTML=`<b>Всего мер: ${m.length}</b>`+m.slice(-8).reverse().map(x=>
-    `<div class="measure" style="padding:11px 13px"><b>${x.title}</b> <small>${x.level}${x.amount?(' · '+rub(x.amount)):''}</small></div>`).join('');
+  document.getElementById('admin-measures').innerHTML=`<div style="margin-bottom:8px"><b class="num">Всего мер: ${m.length}</b></div>`+
+    '<table><thead><tr><th>Мера</th><th>Уровень</th><th style="text-align:right">Сумма</th></tr></thead><tbody>'+
+    m.slice(-10).reverse().map(x=>`<tr><td>${x.title}</td><td>${x.level}</td><td style="text-align:right" class="num">${x.amount?rub(x.amount):'—'}</td></tr>`).join('')+'</tbody></table>';
 }
 
 /* ---- Координатор ---- */
 async function coordLogin(){
   const r=await api('/coordinator/login','POST',{}); coordToken='user-'+r.user.id;
   STATUSES=await api('/application_statuses');
-  document.getElementById('coord-info').innerHTML=`<small>Вы вошли как ${r.user.first_name} ${r.user.last_name} (координатор)</small>`;
+  document.getElementById('coord-info').innerHTML=`<small>Вы вошли как ${r.user.first_name} ${r.user.last_name} (координатор).</small>`;
   loadCoordApps();
 }
 async function loadCoordApps(){
   const apps=await api('/coordinator/applications','GET',null,coordToken);
   document.getElementById('coord-apps').innerHTML=apps.map(x=>
-    `<div class="measure"><b>${x.first_name} ${x.last_name}</b> <small>${x.phone}</small>
+    `<div class="item"><div class="row" style="justify-content:space-between"><b>${x.first_name} ${x.last_name}</b> <small class="num">${x.phone}</small></div>
      <div style="margin:6px 0">${x.measure_title} <span class="badge st-${x.status}">${STATUS_RU[x.status]||x.status}</span></div>
-     <div class="row">${STATUSES.map(s=>`<button class="ghost sm" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}</div>
-     </div>`).join('')||'<small>Заявок пока нет. Подайте заявку во вкладке «Гражданин».</small>';
+     <div class="row">${STATUSES.map(s=>`<button class="ghost sm" onclick="setStatus(${x.id},'${s.code}')">${s.title}</button>`).join('')}</div></div>`).join('')
+    ||'<small>Заявок пока нет. Подайте заявку в разделе «Гражданин».</small>';
 }
-async function setStatus(aid,status){
-  await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken); loadCoordApps();
-}
+async function setStatus(aid,status){await api('/coordinator/applications/'+aid+'/status','POST',{status},coordToken);loadCoordApps();}
 </script>
 </body>
 </html>
