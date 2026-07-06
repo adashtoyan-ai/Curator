@@ -143,10 +143,9 @@
     </div>
 
     <main id="citizen">
-      <div class="card" id="c-login"><h2>Идентификация</h2>
-        <div class="desc">Вход по номеру телефона (демонстрационный код — 1234).</div>
-        <div class="row"><input id="phone" placeholder="+7 918 000 00 00" value="+79181112233" style="max-width:260px">
-          <button onclick="login()">Получить код и войти</button></div>
+      <div class="card" id="c-login"><h2>Вход</h2>
+        <div class="desc">Демо-режим: вход в любую роль в один клик, без SMS.</div>
+        <button onclick="login()">Войти как гражданин</button>
         <small id="otp-hint"></small></div>
 
       <div class="card step hidden" id="c-notif"><h2>Уведомления</h2><div id="notif"></div></div>
@@ -253,10 +252,7 @@ applyBranding();
 
 /* ---- Гражданин ---- */
 async function login(){
-  const phone=document.getElementById('phone').value;
-  const r=await api('/auth/otp/request','POST',{phone});
-  document.getElementById('otp-hint').textContent=r.message;
-  const v=await api('/auth/otp/verify','POST',{phone,code:'1234',first_name:'Иван',last_name:'Петров'});
+  const v=await api('/citizen/login','POST',{});
   token='user-'+v.user.id; on('c-cats'); loadCats(); loadLifeEvents(); loadNotif();
   document.getElementById('c-cats').scrollIntoView({behavior:'smooth',block:'nearest'});
 }

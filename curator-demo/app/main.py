@@ -351,6 +351,22 @@ def coordinator_login():
         return {"token": f"user-{c['id']}", "user": dict(c)}
 
 
+@app.post("/api/v1/citizen/login")
+def citizen_login():
+    """Демо-вход гражданина одним кликом (без SMS)."""
+    with get_conn() as conn:
+        row = conn.execute("SELECT * FROM users WHERE phone=?", ("+79180000009",)).fetchone()
+        if not row:
+            cur = conn.execute(
+                "INSERT INTO users(role,phone,first_name,last_name,region_code) VALUES('citizen',?,?,?,?)",
+                ("+79180000009", "Иван", "Петров", "23"))
+            uid = cur.lastrowid
+        else:
+            uid = row["id"]
+        u = dict(conn.execute("SELECT * FROM users WHERE id=?", (uid,)).fetchone())
+    return {"token": f"user-{uid}", "user": u}
+
+
 # ---------- MODULE: Notifications ----------
 @app.get("/api/v1/notifications")
 def notifications(user=Depends(current_user)):
