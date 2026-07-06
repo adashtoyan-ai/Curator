@@ -15,4 +15,5 @@
 | CODE-1 | 2026-07-06 | Демо-прототип: рабочий сквозной сценарий (FastAPI+SQLite) | ✅ протестировано end-to-end | curator-demo/ |
 | CODE-1.1 | 2026-07-06 | Демо: доработка (Explainability-экран, больше мер, смена статусов координатором) | ✅ протестировано | curator-demo/ |
 | T-009 | 2026-07-06 | Pilot Demo: данные КК, White Label, Case Timeline, дашборд, сценарий показа | ✅ протестировано | curator-demo/, DEMO_SCRIPT.md |
-| GIT-1 | 2026-07-06 | Подготовка к GitHub (README, .gitignore, github_push.sh) | ✅ готово (push — с Mac) | github_push.sh |
+| GIT-1 | 2026-07-06 | Подготовка к GitHub (README, .gitignore, скрипты) | ✅ готово | github_push.sh, deploy_push.sh |
+| GIT-2 | 2026-07-06 | Выложено на GitHub через deploy key | ✅ https://github.com/adashtoyan-ai/curator | — |
